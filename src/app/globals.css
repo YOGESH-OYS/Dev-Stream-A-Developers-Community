@@ -56,3 +56,62 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #3a404c;
 }
+
+/* Custom animations for pricing section */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+/* Enhanced hover effects */
+.group:hover .group-hover\:blur-xl {
+  filter: blur(16px);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Enhanced focus states */
+button:focus,
+a:focus {
+  outline: 2px solid #22d3ee;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Glow effects for interactive elements */
+.glow-on-hover:hover {
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
+}
+
+/* Floating animation for highlight elements */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

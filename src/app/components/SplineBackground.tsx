@@ -1,25 +1,15 @@
-'use client'
+"use client";
 
-// import Spline from '@splinetool/react-spline'
+import Spline from "@splinetool/react-spline";
 
-// export default function SplineBackground({ scene }: { scene: string }) {
-// 	return (
-// 		<div className="w-full h-full">
-// 			<Spline scene={scene} />
-// 		</div>
-// 	)
-// }
+type SplineProps = {
+  scene: string;
+};
 
-
-// import Spline from '@splinetool/react-spline/next';
-import Spline from '@splinetool/react-spline';
-
-export default function Home() {
+export default function SplineBackground({ scene }: SplineProps) {
   return (
-    <main>
-      <Spline
-        scene="https://prod.spline.design/POLyxmhsNxwAGQGo/scene.splinecode" 
-      />
-    </main>
+    <div className="absolute inset-0 -z-10">
+      <Spline scene={scene} />
+    </div>
   );
 }

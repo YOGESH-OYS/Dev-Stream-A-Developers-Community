@@ -1,94 +1,91 @@
-import Link from 'next/link'
-// Temporary fallback; replace with real SplineBackground import later
-function SplineBackground({ scene }: { scene: string }) {
-  return (
-    <div className="absolute inset-0 -z-10" />
-  )
-}
+	import Link from 'next/link'
+import SplineBackground from "./components/SplineBackground";
+import PricingCards from './components/PricingCards'
 
-export default function Page() {
-	return (
-		<main>
-			<NavBar />
-			<HeroSection />
-			<FeaturesSection />
-			<ShowcaseSection />
-			<CommunitySection />
-			<PricingSection />
-			<OutroSection />
-			<Footer />
-		</main>
-	)
-}
 
-function GlowDivider() {
-	return <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></div>
-}
+	export default function Page() {
+		return (
+			<main>
+				<NavBar />
+				<HeroSection />
+				<FeaturesSection />
+				<ShowcaseSection />
+				<CommunitySection />
+				<PricingSection />
+				<OutroSection />
+				<Footer />
+			</main>
+		)
+	}
 
-function SectionWrapper({ children }: { children: React.ReactNode }) {
-	return (
-		<section className="relative overflow-hidden">
-			<GlowParticles />
-			{children}
-		</section>
-	)
-}
+	function GlowDivider() {
+		return <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></div>
+	}
 
-function NavBar() {
-	return (
-		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
-			<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
-				<Link href="#features" className="text-sm text-zinc-300 hover:text-white transition">Features</Link>
-				<Link href="#showcase" className="text-sm text-zinc-300 hover:text-white transition">Showcase</Link>
-				<Link href="#community" className="text-sm text-zinc-300 hover:text-white transition">Community</Link>
-				<Link href="#pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
-				<Link href="#" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Join the Beta</Link>
-			</nav>
-		</div>
-	)
-}
+	function SectionWrapper({ children }: { children: React.ReactNode }) {
+		return (
+			<section className="relative overflow-hidden">
+				<GlowParticles />
+				{children}
+			</section>
+		)
+	}
 
-function HeroSection() {
-	return (
-		<SectionWrapper>
-			<div className="relative min-h-[92vh] flex items-center justify-center">
-				<HeroBackground />
-				<div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-					<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
-						The Developer Community Reimagined
-					</h1>
-					<p className="mt-6 text-lg md:text-xl text-zinc-300">
-						Share Code. Stream Sessions. Build Together.
-					</p>
-					<div className="mt-10 flex items-center justify-center gap-4">
-						<Link href="#pricing" className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_30px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">
-							Join the Beta
-						</Link>
-						<Link href="#features" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">
-							Explore Features
-						</Link>
+	function NavBar() {
+		return (
+			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+				<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
+					<Link href="#features" className="text-sm text-zinc-300 hover:text-white transition">Features</Link>
+					<Link href="#showcase" className="text-sm text-zinc-300 hover:text-white transition">Showcase</Link>
+					<Link href="#community" className="text-sm text-zinc-300 hover:text-white transition">Community</Link>
+					<Link href="#pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
+					<Link href="#" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Join the Beta</Link>
+				</nav>
+			</div>
+		)
+	}
+
+	function HeroSection() {
+		return (
+			<SectionWrapper>
+				<div className="relative min-h-[92vh] flex items-center justify-center">
+					<HeroBackground />
+					<div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+						<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
+							The Developer Community Reimagined
+						</h1>
+						<p className="mt-6 text-lg md:text-xl text-zinc-300">
+							Share Code. Stream Sessions. Build Together.
+						</p>
+						<div className="mt-10 flex items-center justify-center gap-4">
+							<Link href="#pricing" className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_30px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">
+								Join the Beta
+							</Link>
+							<Link href="#features" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">
+								Explore Features
+							</Link>
+						</div>
+					</div>
+
+					<div className="absolute inset-x-0 bottom-0 flex justify-center">
+						<div className="h-24 w-px bg-gradient-to-b from-transparent via-fuchsia-400/60 to-transparent" />
 					</div>
 				</div>
+			</SectionWrapper>
+		)
+	}
 
-				<div className="absolute inset-x-0 bottom-0 flex justify-center">
-					<div className="h-24 w-px bg-gradient-to-b from-transparent via-fuchsia-400/60 to-transparent" />
+	function HeroBackground() {
+		return (
+			<div aria-hidden className="absolute inset-0">
+				<GlowGrid />
+				<div className="absolute inset-0 opacity-70">
+					{/* <SplineBackground scene="https://prod.spline.design/NqR55KzOiGM0AJ1J/scene.splinecode" /> */}
 				</div>
+				<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(168,85,247,0.12),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_40%)]" />
 			</div>
-		</SectionWrapper>
-	)
-}
-
-function HeroBackground() {
-	return (
-		<div aria-hidden className="absolute inset-0">
-			<GlowGrid />
-			<div className="absolute inset-0 opacity-70">
-				<SplineBackground scene="https://prod.spline.design/2Q3B8v8oYlQF7VgI/scene.splinecode" />
-			</div>
-			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(168,85,247,0.12),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(34,211,238,0.12),transparent_40%)]" />
-		</div>
-	)
-}
+		)
+	}
 
 function FeaturesSection() {
 	return (
@@ -259,38 +256,28 @@ function PricingSection() {
 					<h2 className="text-4xl font-bold">Choose your flow</h2>
 					<Toggle />
 				</div>
-				<div className="mt-10 grid md:grid-cols-3 gap-6">
-					<PricingCard name="Free" price="$0" desc="Create & share Codecasts, explore community" cta="Start free" accent="from-zinc-400 to-zinc-200" />
-					<PricingCard name="Pro" price="$12" desc="Advanced arenas, verified badges, custom sandboxes" cta="Go Pro" accent="from-fuchsia-500 to-cyan-500" highlight />
-					<PricingCard name="Team" price="$29" desc="Collaborative streams, org profiles" cta="Start Team" accent="from-emerald-500 to-cyan-500" />
-				</div>
+				<PricingCards />
 			</div>
 		</SectionWrapper>
 	)
 }
 
-function PricingCard({ name, price, desc, cta, accent, highlight }: { name: string, price: string, desc: string, cta: string, accent: string, highlight?: boolean }) {
-	return (
-		<div className={`relative rounded-2xl p-6 border ${highlight ? 'border-cyan-400/30' : 'border-white/10'} bg-white/5 backdrop-blur-xl`}> 
-			<div className={`absolute -inset-0.5 rounded-2xl ${highlight ? 'bg-gradient-to-r from-fuchsia-500/10 to-cyan-500/10' : ''} blur-2xl`} />
-			<div className="relative">
-				<div className={`text-xs uppercase tracking-widest inline-block bg-gradient-to-r ${accent} bg-clip-text text-transparent`}>{name}</div>
-				<div className="mt-2 text-4xl font-extrabold">{price}<span className="text-sm text-zinc-400 font-normal">/mo</span></div>
-				<p className="mt-2 text-zinc-300">{desc}</p>
-				<button className="mt-5 w-full px-5 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">{cta}</button>
-			</div>
-		</div>
-	)
-}
+
+
+
 
 function Toggle() {
 	return (
-		<div className="flex items-center gap-2 text-sm text-zinc-400">
-			<span>Monthly</span>
-			<button className="relative h-7 w-14 rounded-full bg-white/10 border border-white/10">
-				<span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-500 shadow-[0_0_20px] shadow-fuchsia-500/30" />
+		<div className="flex items-center gap-3 text-sm text-zinc-400">
+			<span className="font-medium">Monthly</span>
+			<button className="group relative h-8 w-16 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 transition-colors duration-300">
+				<span className="absolute left-1 top-1 h-6 w-6 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-500 shadow-[0_0_20px] shadow-fuchsia-500/30 group-hover:shadow-fuchsia-500/50 transition-all duration-300 transform group-hover:scale-110" />
 			</button>
-			<span>Yearly</span>
+			<span className="font-medium">Yearly</span>
+			{/* Savings badge */}
+			<div className="ml-2 px-2 py-1 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-xs text-emerald-300">
+				Save 20%
+			</div>
 		</div>
 	)
 }
@@ -388,13 +375,13 @@ function ArenaMockup({ compact }: { compact?: boolean }) {
 			<div className={`grid grid-cols-2 ${compact ? '' : 'min-h-60'}`}>
 				<div className="p-4">
 					<div className="rounded-lg border border-white/10 p-3">
-						<pre className="text-[12px] text-fuchsia-300/90">{`const sum = (a,b) => a+b`}</pre>
+						<pre className="text-[12px] text-fuchsia-300/90">{`const s=(a,b) =>a+b`}</pre>
 					</div>
 					<button className="mt-3 w-full rounded-md bg-fuchsia-600/80 hover:bg-fuchsia-500 text-white py-1.5 text-sm">Vote</button>
 				</div>
 				<div className="p-4 border-l border-white/10">
 					<div className="rounded-lg border border-white/10 p-3">
-						<pre className="text-[12px] text-cyan-300/90">{`function sum(a,b){ return a+b }`}</pre>
+						<pre className="text-[12px] text-cyan-300/90">{`function sum(a,b){ `}</pre>
 					</div>
 					<button className="mt-3 w-full rounded-md bg-cyan-600/80 hover:bg-cyan-500 text-white py-1.5 text-sm">Vote</button>
 				</div>
