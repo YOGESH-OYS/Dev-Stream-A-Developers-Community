@@ -1,5 +1,4 @@
-	import Link from 'next/link'
-import SplineBackground from "./components/SplineBackground";
+import Link from 'next/link'
 import PricingCards from './components/PricingCards'
 
 
@@ -39,7 +38,7 @@ import PricingCards from './components/PricingCards'
 					<Link href="#showcase" className="text-sm text-zinc-300 hover:text-white transition">Showcase</Link>
 					<Link href="#community" className="text-sm text-zinc-300 hover:text-white transition">Community</Link>
 					<Link href="#pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
-					<Link href="#" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Join the Beta</Link>
+					<Link href="#pricing" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Join the Beta</Link>
 				</nav>
 			</div>
 		)
@@ -257,6 +256,27 @@ function PricingSection() {
 					<Toggle />
 				</div>
 				<PricingCards />
+				
+				{/* Call to Action Button Below Pricing Cards */}
+				<Link href='/pricing'>
+				<div className="mt-12 text-center">
+					<button className="group relative px-8 py-4 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold text-lg shadow-[0_0_30px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition-all duration-300 overflow-hidden hover:scale-105">
+						{/* Button glow effect */}
+						<div className="absolute inset-0 bg-gradient-to-r from-fuchsia-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+						
+						{/* Button content */}
+						<span className="relative z-10 flex items-center justify-center gap-3">
+							For More Details
+							<svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+							</svg>
+						</span>
+						
+						{/* Ripple effect */}
+						<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+					</button>
+				</div>
+				</Link>
 			</div>
 		</SectionWrapper>
 	)
@@ -288,9 +308,12 @@ function OutroSection() {
 			<div className="relative max-w-5xl mx-auto px-6 py-32 text-center">
 				<div className="relative">
 					<div className="absolute inset-0 -z-10 blur-3xl opacity-40 bg-[conic-gradient(at_50%_50%,#22d3ee,transparent, #a855f7, transparent,#22d3ee)]" />
-					<h2 className="text-5xl md:text-6xl font-extrabold leading-tight">Code doesn’t just live. It streams.</h2>
+					<p className="mt-4 text-zinc-400 text-sm">
+						Join thousands of developers already building the future
+					</p>
 					<div className="mt-8 flex items-center justify-center gap-4">
-						<Link href="#pricing" className="px-6 py-3 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_30px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Join the Beta</Link>
+						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on GitHub</Link>
+						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on GitHub</Link>
 						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on GitHub</Link>
 					</div>
 				</div>
