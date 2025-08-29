@@ -50,7 +50,7 @@ import { useState } from 'react'
 	function HeroSection() {
 		return (
 			<SectionWrapper>
-				<div className="relative min-h-[92vh] flex items-center justify-center">
+				<div className="relative min-h-[100vh] flex items-center justify-center">
 					<HeroBackground />
 					<div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
 						<h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-transparent">
@@ -286,7 +286,7 @@ function PricingSection() {
 
 function HeaderSection({ isYearly, setIsYearly }: { isYearly: boolean, setIsYearly: (value: boolean) => void }) {
 	return (
-		<section className="relative py-32 text-center">
+		<section className="relative py-10 text-center">
 			<div className="relative z-10">
 				<h2 className="mt-4 text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-gradient-to-b from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent">
 					Build without limits.
