@@ -64,26 +64,49 @@ function HeaderSection({ isYearly, setIsYearly }: { isYearly: boolean, setIsYear
 				
 				{/* Billing Toggle */}
 				<div className="mt-12 flex items-center justify-center gap-4">
-					<span className={`text-lg font-medium transition-colors ${!isYearly ? 'text-white' : 'text-zinc-400'}`}>
-						Monthly
-					</span>
-					<button 
-						onClick={() => setIsYearly(!isYearly)}
-						className="relative h-10 w-20 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 transition-colors duration-300 focus:outline-none focus:ring-0 focus:border-white/10 focus:shadow-none"
-						style={{ outline: 'none', boxShadow: 'none' }}
-					>
-						<span className={`absolute top-1 h-8 w-8 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-500 shadow-[0_0_20px] shadow-fuchsia-500/30 transition-all duration-300 transform ${isYearly ? 'translate-x-11' : 'translate-x-1'}`} />
-					</button>
-					<span className={`text-lg font-medium transition-colors ${isYearly ? 'text-white' : 'text-zinc-400'}`}>
-						Yearly
-					</span>
-					{/* Savings badge */}
-					{isYearly && (
-						<div className="ml-2 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-sm text-emerald-300 font-medium">
-							Save 20%
-						</div>
-					)}
-				</div>
+          
+
+          {/* Toggle Pill */}
+          <div className="relative w-20 h-10 flex items-center justify-center ml-20">
+            <button
+              onClick={() => setIsYearly(!isYearly)}
+              className="absolute inset-0 rounded-full bg-white/10 border border-white/10
+                        hover:bg-white/20 transition-colors duration-300 focus:outline-none"
+            >
+              <span
+                className={`absolute top-1 left-1 h-8 w-8 rounded-full
+                            bg-gradient-to-r from-fuchsia-500 to-cyan-500 
+                            shadow-[0_0_20px] shadow-fuchsia-500/30
+                            transition-transform duration-300
+                            ${isYearly ? 'translate-x-10' : 'translate-x-0'}`}
+              />
+            </button>
+          </div>
+          <span
+            className={`text-lg font-medium transition-colors ${
+              !isYearly ? 'text-white' : 'text-zinc-400'
+            }`}
+          >
+            Monthly
+          </span>
+
+          <span
+            className={`text-lg font-medium transition-colors ${
+              isYearly ? 'text-white' : 'text-zinc-500'
+            }`}
+          >
+            Yearly
+          </span>
+
+          {/* Badge with fixed space */}
+          <div className="w-[90px] flex justify-center">
+            {isYearly && (
+              <div className="px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-sm text-emerald-300 font-medium">
+                Save 20%
+              </div>
+            )}
+          </div>
+        </div>
 			</div>
 		</section>
 	)
@@ -319,9 +342,7 @@ function OutroSection() {
 					Join thousands of developers already building the future with AI-powered tools.
 				</p>
 				<div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
-					<Link href="#pricing" className="px-8 py-4 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_30px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition hover:scale-105">
-						Get Started Free
-					</Link>
+					
 					<Link href="https://github.com" className="px-8 py-4 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition hover:scale-105">
 						View on GitHub
 					</Link>

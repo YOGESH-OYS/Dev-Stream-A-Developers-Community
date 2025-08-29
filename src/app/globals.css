@@ -36,10 +36,15 @@ html {
 }
 
 /* Focus ring */
-*:focus {
-  outline: 2px solid #22d3ee;
-  outline-offset: 2px;
+button:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
@@ -88,13 +93,6 @@ html {
   transition-duration: 150ms;
 }
 
-/* Enhanced focus states */
-button:focus,
-a:focus {
-  outline: 2px solid #22d3ee;
-  outline-offset: 4px;
-  border-radius: 8px;
-}
 
 /* Glow effects for interactive elements */
 .glow-on-hover:hover {
