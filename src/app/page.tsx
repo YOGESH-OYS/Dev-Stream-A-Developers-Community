@@ -1,5 +1,8 @@
+'use client'
 import Link from 'next/link'
 import PricingCards from './components/PricingCards'
+import { useState } from 'react'
+
 
 
 	export default function Page() {
@@ -38,7 +41,7 @@ import PricingCards from './components/PricingCards'
 					<Link href="#showcase" className="text-sm text-zinc-300 hover:text-white transition">Showcase</Link>
 					<Link href="#community" className="text-sm text-zinc-300 hover:text-white transition">Community</Link>
 					<Link href="#pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
-					<Link href="#pricing" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Join the Beta</Link>
+					<Link href="#pricing" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Sign in</Link>
 				</nav>
 			</div>
 		)
@@ -248,13 +251,11 @@ function Badge({ children }: { children: React.ReactNode }) {
 }
 
 function PricingSection() {
+	const [isYearly, setIsYearly] = useState(false)
 	return (
 		<SectionWrapper>
 			<div id="pricing" className="relative max-w-7xl mx-auto px-6 py-28">
-				<div className="flex items-center justify-between">
-					<h2 className="text-4xl font-bold">Choose your flow</h2>
-					<Toggle />
-				</div>
+				  <HeaderSection isYearly={isYearly} setIsYearly={setIsYearly} />
 				<PricingCards />
 				
 				{/* Call to Action Button Below Pricing Cards */}
@@ -283,22 +284,61 @@ function PricingSection() {
 }
 
 
-
-
-
-function Toggle() {
+function HeaderSection({ isYearly, setIsYearly }: { isYearly: boolean, setIsYearly: (value: boolean) => void }) {
 	return (
-		<div className="flex items-center gap-3 text-sm text-zinc-400">
-			<span className="font-medium">Monthly</span>
-			<button className="group relative h-8 w-16 rounded-full bg-white/10 border border-white/10 hover:bg-white/20 transition-colors duration-300">
-				<span className="absolute left-1 top-1 h-6 w-6 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-500 shadow-[0_0_20px] shadow-fuchsia-500/30 group-hover:shadow-fuchsia-500/50 transition-all duration-300 transform group-hover:scale-110" />
-			</button>
-			<span className="font-medium">Yearly</span>
-			{/* Savings badge */}
-			<div className="ml-2 px-2 py-1 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-xs text-emerald-300">
-				Save 20%
+		<section className="relative py-32 text-center">
+			<div className="relative z-10">
+				<h2 className="mt-4 text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-gradient-to-b from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent">
+					Build without limits.
+				</h2>
+				
+				{/* Billing Toggle */}
+				<div className="mt-12 flex items-center justify-center gap-4">
+          
+
+          {/* Toggle Pill */}
+          <div className="relative w-20 h-10 flex items-center justify-center ml-20">
+            <button
+              onClick={() => setIsYearly(!isYearly)}
+              className="absolute inset-0 rounded-full bg-white/10 border border-white/10
+                        hover:bg-white/20 transition-colors duration-300 focus:outline-none"
+            >
+              <span
+                className={`absolute top-1 left-1 h-8 w-8 rounded-full
+                            bg-gradient-to-r from-fuchsia-500 to-cyan-500 
+                            shadow-[0_0_20px] shadow-fuchsia-500/30
+                            transition-transform duration-300
+                            ${isYearly ? 'translate-x-10' : 'translate-x-0'}`}
+              />
+            </button>
+          </div>
+          <span
+            className={`text-lg font-medium transition-colors ${
+              !isYearly ? 'text-white' : 'text-zinc-400'
+            }`}
+          >
+            Monthly
+          </span>
+
+          <span
+            className={`text-lg font-medium transition-colors ${
+              isYearly ? 'text-white' : 'text-zinc-500'
+            }`}
+          >
+            Yearly
+          </span>
+
+          {/* Badge with fixed space */}
+          <div className="w-[90px] flex justify-center">
+            {isYearly && (
+              <div className="px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 text-sm text-emerald-300 font-medium">
+                Save 20%
+              </div>
+            )}
+          </div>
+        </div>
 			</div>
-		</div>
+		</section>
 	)
 }
 
@@ -308,13 +348,16 @@ function OutroSection() {
 			<div className="relative max-w-5xl mx-auto px-6 py-32 text-center">
 				<div className="relative">
 					<div className="absolute inset-0 -z-10 blur-3xl opacity-40 bg-[conic-gradient(at_50%_50%,#22d3ee,transparent, #a855f7, transparent,#22d3ee)]" />
+					<h2 className="mt-4 text-5xl md:text-7xl font-extrabold tracking-tight leading-tight bg-gradient-to-b from-cyan-400 to-fuchsia-400 bg-clip-text text-transparent">
+					@DEV-Stream
+				</h2>
 					<p className="mt-4 text-zinc-400 text-sm">
 						Join thousands of developers already building the future
 					</p>
 					<div className="mt-8 flex items-center justify-center gap-4">
 						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on GitHub</Link>
-						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on GitHub</Link>
-						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on GitHub</Link>
+						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on LinkedIn</Link>
+						<Link href="https://github.com" className="px-6 py-3 rounded-xl border border-white/10 text-zinc-200 hover:bg-white/5 transition">Follow on Threads</Link>
 					</div>
 				</div>
 			</div>
