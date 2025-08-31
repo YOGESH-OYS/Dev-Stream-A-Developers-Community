@@ -20,7 +20,7 @@ export default function HeaderSection({ isYearly, setIsYearly }: { isYearly: boo
                         hover:bg-white/20 transition-colors duration-300 focus:outline-none"
             >
               <span
-                className={`absolute top-1 left-1 h-8 w-8 rounded-full
+                className={`absolute bottom-1 left-1 h-8 w-8 rounded-full
                             bg-gradient-to-r from-fuchsia-500 to-cyan-500 
                             shadow-[0_0_20px] shadow-fuchsia-500/30
                             transition-transform duration-300

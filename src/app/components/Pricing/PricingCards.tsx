@@ -1,6 +1,6 @@
 'use client'
 
-import { useIntersectionObserver } from './useIntersectionObserver'
+import { useIntersectionObserver } from '../useIntersectionObserver'
 
 interface PricingCardProps {
   name: string

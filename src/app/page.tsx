@@ -1,6 +1,7 @@
+import React from "react";
 import Link from 'next/link'
-import PricingCards from './components/PricingCards'
-import HeaderFunctionClient from './components/ToggellerFun'
+import PricingCards from './components/Pricing/PricingCards'
+import HeaderFunctionClient from './components/Toggle/ToggellerFun'
 
 	export default function Page() {
 		return (
@@ -34,10 +35,26 @@ import HeaderFunctionClient from './components/ToggellerFun'
 		return (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
 				<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
-					<Link href="#features" className="text-sm text-zinc-300 hover:text-white transition">Features</Link>
-					<Link href="#showcase" className="text-sm text-zinc-300 hover:text-white transition">Showcase</Link>
-					<Link href="#community" className="text-sm text-zinc-300 hover:text-white transition">Community</Link>
-					<Link href="#pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
+					<Link href="#features"
+						className="
+							relative text-sm font-medium text-zinc-300 transition duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-cyan-500 hover:bg-clip-text
+						"
+					>Features</Link>
+					<Link href="#showcase"
+					  className="
+							relative text-sm font-medium text-zinc-300 transition duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-cyan-500 hover:bg-clip-text
+						"
+					>Showcase</Link>
+					<Link href="#community" 
+						className="
+							relative text-sm font-medium text-zinc-300 transition duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-cyan-500 hover:bg-clip-text
+						"
+					>Community</Link>
+					<Link href="#pricing" 
+						className="
+							relative text-sm font-medium text-zinc-300 transition duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-cyan-500 hover:bg-clip-text
+						"
+					>Pricing</Link>
 					<Link href="#pricing" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Sign in</Link>
 				</nav>
 			</div>
@@ -255,7 +272,7 @@ function PricingSection() {
 				<PricingCards />
 				
 				{/* Call to Action Button Below Pricing Cards */}
-				<Link href='/pricing'>
+				<Link href='Pages/pricing'>
 				<div className="mt-12 text-center">
 					<button className="group relative px-8 py-4 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold text-lg shadow-[0_0_30px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition-all duration-300 overflow-hidden hover:scale-105">
 						{/* Button glow effect */}
