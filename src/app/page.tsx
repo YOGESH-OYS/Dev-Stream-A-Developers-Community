@@ -55,7 +55,7 @@ import HeaderFunctionClient from './components/Toggle/ToggellerFun'
 							relative text-sm font-medium text-zinc-300 transition duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-cyan-500 hover:bg-clip-text
 						"
 					>Pricing</Link>
-					<Link href="#pricing" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Sign in</Link>
+					<Link href="/Pages/login" className="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Sign in</Link>
 				</nav>
 			</div>
 		)
@@ -267,7 +267,7 @@ function Badge({ children }: { children: React.ReactNode }) {
 function PricingSection() {
 	return (
 		<SectionWrapper>
-			<div id="pricing" className="relative max-w-7xl mx-auto px-6 py-28">
+			<div id="pricing" className="relative max-w-7xl mx-auto px-6 py-18">
 				  <HeaderFunctionClient />
 				<PricingCards />
 				
