@@ -7,7 +7,7 @@ import { useState } from 'react'
 export default function PricingPage() {
 	const [isYearly, setIsYearly] = useState(false)
 
-	return (
+  return (
 		<main className="min-h-screen bg-black text-white overflow-x-hidden">
 			{/* Background Elements */}
 			<GlowParticles />
@@ -42,7 +42,6 @@ function NavBar() {
 		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
 			<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
 				<Link href="/" className="text-sm text-zinc-300 hover:text-white transition">← Back to Home</Link>
-				<Link href="#pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
 				<Link href="https://github.com" className="text-sm text-zinc-300 hover:text-white transition">GitHub</Link>
 			</nav>
 		</div>
@@ -69,7 +68,7 @@ function HeaderSection({ isYearly, setIsYearly }: { isYearly: boolean, setIsYear
 
           {/* Toggle Pill */}
           <div className="relative w-20 h-10 flex items-center justify-center ml-20">
-            <button
+      <button
               onClick={() => setIsYearly(!isYearly)}
               className="absolute inset-0 rounded-full bg-white/10 border border-white/10
                         hover:bg-white/20 transition-colors duration-300 focus:outline-none"
@@ -81,8 +80,8 @@ function HeaderSection({ isYearly, setIsYearly }: { isYearly: boolean, setIsYear
                             transition-transform duration-300
                             ${isYearly ? 'translate-x-10' : 'translate-x-0'}`}
               />
-            </button>
-          </div>
+      </button>
+    </div>
           <span
             className={`text-lg font-medium transition-colors ${
               !isYearly ? 'text-white' : 'text-zinc-400'
@@ -122,6 +121,7 @@ function PricingCards({ isYearly }: { isYearly: boolean }) {
 			period: "forever",
 			description: "Perfect for getting started with AI-powered development",
 			cta: "Start Free",
+			topage:'/auth/register',
 			accent: "from-zinc-400 to-zinc-200",
 			highlight: true,
 			features: [
@@ -140,6 +140,7 @@ function PricingCards({ isYearly }: { isYearly: boolean }) {
 			period: isYearly ? "/year" : "/month",
 			description: "Unlock unlimited AI assistance and advanced features",
 			cta: "Upgrade to Pro",
+			topage:'/auth/register',
 			accent: "from-fuchsia-500 to-cyan-500",
       highlight: true,
 			features: [
@@ -159,6 +160,7 @@ function PricingCards({ isYearly }: { isYearly: boolean }) {
 			period: "",
 			description: "Enterprise-grade solutions with dedicated support",
 			cta: "Contact Sales",
+			topage:'/contact',
 			accent: "from-emerald-500 to-cyan-500",
       highlight: true,
 			features: [
@@ -264,6 +266,7 @@ function PricingCard({ plan, index }: { plan: any, index: number }) {
 				
 				{/* CTA Button - now at bottom of card */}
 				<div className="text-center mt-auto">
+				 <Link href={plan.topage} className="block">
 					<button className={`group/btn relative w-full px-6 py-3 rounded-xl font-semibold shadow-[0_0_20px] transition-all duration-300 overflow-hidden ${
 						plan.highlight
 							? 'bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black shadow-cyan-500/40 hover:shadow-fuchsia-500/40'
@@ -282,6 +285,7 @@ function PricingCard({ plan, index }: { plan: any, index: number }) {
 							</svg>
 						</span>
 					</button>
+					</Link>
 				</div>
 			</div>
 		</div>

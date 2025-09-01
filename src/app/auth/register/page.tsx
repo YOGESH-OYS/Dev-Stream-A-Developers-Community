@@ -265,8 +265,8 @@ function NavBar() {
 		<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
 			<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
 				<Link href="/" className="text-sm text-zinc-300 hover:text-white transition">← Back to Home</Link>
-				<Link href="/Pages/pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
-				<Link href="/Pages/login" className="ml-2 px-4 py-1 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Sign in</Link>
+				<Link href="/pricing" className="text-sm text-zinc-300 hover:text-white transition">Pricing</Link>
+				<Link href="/auth/login" className="ml-2 px-4 py-1 rounded-lg bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold shadow-[0_0_20px] shadow-cyan-500/40 hover:shadow-fuchsia-500/40 transition">Sign in</Link>
 			</nav>
 		</div>
 	)
