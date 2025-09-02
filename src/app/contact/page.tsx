@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import ScrollEffect from '../components/ScroolEffect/scroll'
 
 export default function ContactPage() {
 	return (
 		<main className="min-h-screen bg-black text-white overflow-x-hidden relative">
+			<ScrollEffect />
 			{/* Background Elements */}
 			<GlowParticles />
 			<GlowGrid />

@@ -3,12 +3,14 @@
 import React from "react";
 import Link from 'next/link'
 import { useState } from 'react'
+import ScrollEffect from '../components/ScroolEffect/scroll'
 
 export default function PricingPage() {
 	const [isYearly, setIsYearly] = useState(false)
 
   return (
 		<main className="min-h-screen bg-black text-white overflow-x-hidden">
+			<ScrollEffect />
 			{/* Background Elements */}
 			<GlowParticles />
 			<GlowGrid />

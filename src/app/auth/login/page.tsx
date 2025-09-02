@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import ScrollEffect from '../../components/ScroolEffect/scroll'
 
 export default function LoginPage() {
 	return (
 		<main className="min-h-screen bg-black text-white overflow-x-hidden relative">
+			<ScrollEffect />
 			{/* Background Elements - Same as Landing Page */}
 			<GlowParticles />
 			<GlowGrid />
@@ -41,7 +42,7 @@ export default function LoginPage() {
 					<div className="mt-8 text-center">
 						<p className="text-zinc-400">
 							Don't have an account?{' '}
-							<Link href="/Pages/register" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+							<Link href="/auth/register" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
 								Create Account
 							</Link>
 						</p>

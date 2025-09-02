@@ -2,10 +2,13 @@ import React from "react";
 import Link from 'next/link'
 import PricingCards from './components/Pricing/PricingCards'
 import HeaderFunctionClient from './components/Toggle/ToggellerFun'
+import ScrollEffect from './components/ScroolEffect/scroll'
+
 
 	export default function Page() {
 		return (
 			<main>
+				<ScrollEffect />
 				<NavBar />
 				<HeroSection />
 				<FeaturesSection />
