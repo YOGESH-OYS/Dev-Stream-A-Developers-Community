@@ -1,23 +1,34 @@
-// import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-// const MONGODB_URI = process.env.MONGODB_URI;
-// console.log("MONGODB_URI from env:", process.env.MONGODB_URI);
-// if (!MONGODB_URI) {
-//   console.error("⚠️ MONGODB_URI is missing in .env.local");
-//   throw new Error("Please define MONGODB_URI inside .env.local");
-// }
+const MONGO_URI = process.env.MONGODB_URI as string;
 
-// let isConnected = false;
+if (!MONGO_URI) {
+  throw new Error("⚠️ Please define the MONGO_URI environment variable inside .env.local");
+}
 
-// export default async ()=>{
-//   if (isConnected) return;
+// Global cache to prevent multiple connections in dev (Hot Reload issue)
+let cached = (global as any).mongoose;
 
-//   try {
-//     await mongoose.connect(MONGODB_URI as string);
-//     isConnected = true;
-//     console.log("✅ Connected to MongoDB");
-//   } catch (error) {
-//     console.error("❌ MongoDB connection error:", error);
-//     throw error;
-//   }
-// }
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
+
+export async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGO_URI, {
+      bufferCommands: false,
+    }).then((mongoose) => {
+      console.log("✅ Connected to MongoDB");
+      return mongoose;
+    }).catch((err) => {
+      console.error("❌ MongoDB connection error:", err);
+      throw err;
+    });
+  }
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
