@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import ScrollEffect from '../../components/ScroolEffect/scroll'
+import { useState } from 'react'
 
 export default function LoginPage() {
 	return (
@@ -94,21 +95,54 @@ export default function LoginPage() {
 	)
 }
 
-
 function SignInForm() {
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+
+	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault()
+		setError(null)
+		setLoading(true)
+		const form = e.currentTarget
+		const formData = new FormData(form)
+		const emailOrUsername = String(formData.get('email'))
+		const password = String(formData.get('password'))
+		try {
+			const res = await fetch('/api/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ emailOrUsername, password })
+			})
+			const data = await res.json()
+			if (!res.ok || !data.success) {
+				throw new Error(data.message || 'Login failed')
+			}
+			window.location.href = data.redirect || '/home'
+		} catch (err: any) {
+			setError(err.message || 'Login failed')
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	return (
-		<form className="space-y-4">
+		<form className="space-y-4" onSubmit={onSubmit}>
+			{error && (
+				<div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+					{error}
+				</div>
+			)}
 			<div>
 				<label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
-					Email Address
+					Email or Username
 				</label>
 				<input
-					type="email"
+					type="text"
 					id="email"
 					name="email"
 					required
 					className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all duration-300 text-white placeholder-zinc-400"
-					placeholder="you@example.com"
+					placeholder="you@example.com or johndoe"
 				/>
 			</div>
 
@@ -140,9 +174,10 @@ function SignInForm() {
 
 			<button
 				type="submit"
-				className="w-full py-3 px-4 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold rounded-xl hover:shadow-[0_0_30px] hover:shadow-cyan-500/40 transition-all duration-300"
+				disabled={loading}
+				className="w-full py-3 px-4 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold rounded-xl hover:shadow-[0_0_30px] hover:shadow-cyan-500/40 transition-all duration-300 disabled:opacity-70"
 			>
-				Sign In
+				{loading ? 'Signing In…' : 'Sign In'}
 			</button>
 		</form>
 	)

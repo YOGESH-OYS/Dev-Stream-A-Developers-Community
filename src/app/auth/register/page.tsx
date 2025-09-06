@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import ScrollEffect from '../../components/ScroolEffect/scroll'
+import { useState } from 'react'
 
 export default function RegisterPage() {
 	return (
@@ -95,8 +96,58 @@ export default function RegisterPage() {
 }
 
 function RegisterForm() {
+	const [loading, setLoading] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+
+	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault()
+		setError(null)
+		setLoading(true)
+		const form = e.currentTarget
+		const formData = new FormData(form)
+		const firstName = String(formData.get('firstName'))
+		const lastName = String(formData.get('lastName'))
+		const username = String(formData.get('username'))
+		const email = String(formData.get('email'))
+		const linkedin = String(formData.get('linkedin') || '')
+		const github = String(formData.get('github') || '')
+		const bio = String(formData.get('bio') || '')
+		const password = String(formData.get('password'))
+		const confirmPassword = String(formData.get('confirmPassword'))
+		const terms = formData.get('terms') === 'on'
+		if (!terms) {
+			setLoading(false)
+			return setError('Please accept the terms to continue')
+		}
+		if (password !== confirmPassword) {
+			setLoading(false)
+			return setError('Passwords do not match')
+		}
+		try {
+			const res = await fetch('/api/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ firstName, lastName, username, email, password, linkedin, github, bio })
+			})
+			const data = await res.json()
+			if (!res.ok || !data.success) {
+				throw new Error(data.message || 'Registration failed')
+			}
+			window.location.href = data.redirect || '/home'
+		} catch (err: any) {
+			setError(err.message || 'Registration failed')
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	return (
-		<form className="space-y-4">
+		<form className="space-y-4" onSubmit={onSubmit}>
+			{error && (
+				<div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+					{error}
+				</div>
+			)}
 			{/* Personal Information */}
 			<div className="grid md:grid-cols-2 gap-4">
 				<div>
@@ -253,9 +304,10 @@ function RegisterForm() {
 			{/* Submit Button */}
 			<button
 				type="submit"
-				className="w-full py-3 px-4 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold rounded-xl hover:shadow-[0_0_30px] hover:shadow-cyan-500/40 transition-all duration-300"
+				disabled={loading}
+				className="w-full py-3 px-4 bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-semibold rounded-xl hover:shadow-[0_0_30px] hover:shadow-cyan-500/40 transition-all duration-300 disabled:opacity-70"
 			>
-				Create Account
+				{loading ? 'Creating Account…' : 'Create Account'}
 			</button>
 		</form>
 	)
