@@ -7,6 +7,7 @@
 "use client"
 
 import { cn } from "@/lib/utils";
+import ScrollEffect from "../ScroolEffect/scroll";
 import { IconLayoutNavbarCollapse } from "@tabler/icons-react";
 import {
   AnimatePresence,
@@ -18,6 +19,12 @@ import {
 } from "motion/react";
 
 import { useRef, useState } from "react";
+
+import { RiHome9Fill } from "react-icons/ri"
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { BiSearchAlt } from "react-icons/bi";
+import { MdNotificationsActive } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
 
 export const FloatingDock = ({
   items,
@@ -200,3 +207,25 @@ function IconContainer({
     </a>
   );
 } 
+
+
+export function FloatingNavbar(){
+	return(
+		<main>
+			<div className="fixed top-0 left-0 w-full z-[9999]">
+			<ScrollEffect />
+      <FloatingDock
+        items={[
+          { title: "Home", icon: <RiHome9Fill />, href: "/" },
+          { title: "Search", icon: <BiSearchAlt />, href: "/" },
+          { title: "Post", icon: <IoIosAddCircleOutline />, href: "/" },
+          { title: "Notification", icon: <MdNotificationsActive />, href: "/" },
+          { title: "Profile", icon: <CgProfile />, href: "/" },
+        ]}
+        desktopClassName="fixed bottom-4 left-1/2 -translate-x-1/2"
+        mobileClassName="fixed bottom-4 right-4"
+      />
+			</div>
+		</main>
+	)
+}

@@ -1,20 +1,18 @@
 import { NextResponse } from 'next/server'
 import { connectDB } from '../../../lib/mongodb'
 import User from '../../../models/User'
-import { verifyToken } from '../../../lib/auth'
+import { verifySessionToken } from '../../../lib/auth'
 
 export async function GET(req: Request) {
 	try {
 		await connectDB()
-		
 		const authHeader = req.headers.get('authorization')
-		const token = authHeader?.replace('Bearer ', '') || req.headers.get('cookie')?.split('; ').find(c => c.startsWith('ds_session='))?.split('=')[1]
-		
+		const token = authHeader?.replace('Bearer ', '') || req.headers.get('cookie')?.split('; ').find(c => c.startsWith('dev-stream-auth-cookie='))?.split('=')[1]
 		if (!token) {
 			return NextResponse.json({ success: false, message: 'No token provided' }, { status: 401 })
 		}
 
-		const payload = verifyToken(token)
+		const payload = verifySessionToken(token)
 		if (!payload) {
 			return NextResponse.json({ success: false, message: 'Invalid token' }, { status: 401 })
 		}

@@ -26,7 +26,9 @@ export function signSession(payload: { userId: string }, expiresInSeconds: numbe
 }
 
 export function verifySessionToken(token: string) {
-	try { return jwt.verify(token, JWT_SECRET) as { userId: string, iat: number, exp: number } }
+	try { 
+		return jwt.verify(token, JWT_SECRET) as { userId: string, iat: number, exp: number } 
+	}
 	catch { return null }
 }
 
