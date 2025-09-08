@@ -18,6 +18,8 @@ import {
   useTransform,
 } from "motion/react";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { RiHome9Fill } from "react-icons/ri"
@@ -35,10 +37,11 @@ export const FloatingDock = ({
   desktopClassName?: string;
   mobileClassName?: string;
 }) => {
+  const pathname = usePathname();
   return (
     <>
-      <FloatingDockDesktop items={items} className={desktopClassName} />
-      <FloatingDockMobile items={items} className={mobileClassName} />
+      <FloatingDockDesktop items={items} className={desktopClassName} pathname={pathname} />
+      <FloatingDockMobile items={items} className={mobileClassName} pathname={pathname} />
     </>
   );
 };
@@ -46,9 +49,11 @@ export const FloatingDock = ({
 const FloatingDockMobile = ({
   items,
   className,
+  pathname,
 }: {
   items: { title: string; icon: React.ReactNode; href: string }[];
   className?: string;
+  pathname: string | null;
 }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -59,32 +64,40 @@ const FloatingDockMobile = ({
             layoutId="nav"
             className="absolute inset-x-0 bottom-full mb-2 flex flex-col gap-2 "
           >
-            {items.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                exit={{
-                  opacity: 0,
-                  y: 10,
-                  transition: {
-                    delay: idx * 0.05,
-                  },
-                }}
-                transition={{ delay: (items.length - 1 - idx) * 0.05 }}
-              >
-                <a
-                  href={item.href}
+            {items.map((item, idx) => {
+              const isActive = pathname === item.href;
+              return (
+                <motion.div
                   key={item.title}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: 10,
+                    transition: {
+                      delay: idx * 0.05,
+                    },
+                  }}
+                  transition={{ delay: (items.length - 1 - idx) * 0.05 }}
                 >
-                  <div className="h-4 w-4">{item.icon}</div>
-                </a>
-              </motion.div>
-            ))}
+                  <Link
+                    href={item.href}
+                    prefetch
+                    className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-full",
+                      isActive
+                        ? "bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black shadow-[0_0_20px] shadow-cyan-500/30"
+                        : "bg-gray-50 dark:bg-neutral-900"
+                    )}
+                  >
+                    <div className="h-4 w-4">{item.icon}</div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -101,9 +114,11 @@ const FloatingDockMobile = ({
 const FloatingDockDesktop = ({
   items,
   className,
+  pathname,
 }: {
   items: { title: string; icon: React.ReactNode; href: string }[];
   className?: string;
+  pathname: string | null;
 }) => {
   let mouseX = useMotionValue(Infinity);
   return (
@@ -116,7 +131,7 @@ const FloatingDockDesktop = ({
       )}
     >
       {items.map((item) => (
-        <IconContainer mouseX={mouseX} key={item.title} {...item} />
+        <IconContainer mouseX={mouseX} key={item.title} {...item} isActive={pathname === item.href} />
       ))}
     </motion.div>
   );
@@ -127,11 +142,13 @@ function IconContainer({
   title,
   icon,
   href,
+  isActive,
 }: {
   mouseX: MotionValue;
   title: string;
   icon: React.ReactNode;
   href: string;
+  isActive: boolean;
 }) {
   let ref = useRef<HTMLDivElement>(null);
 
@@ -177,13 +194,16 @@ function IconContainer({
   
 
   return (
-    <a href={href}>
+    <Link href={href} prefetch>
       <motion.div
         ref={ref}
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800"
+        className={cn(
+          "relative flex aspect-square items-center justify-center rounded-full transition-colors",
+          isActive ? "bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black shadow-[0_0_25px] shadow-cyan-500/30" : "bg-gray-200 dark:bg-neutral-800"
+        )}
       >
         <AnimatePresence>
           {hovered && (
@@ -204,23 +224,24 @@ function IconContainer({
           {icon}
         </motion.div>
       </motion.div>
-    </a>
+    </Link>
   );
-} 
+}
 
 
 export function FloatingNavbar(){
+  const pathname = usePathname();
 	return(
 		<main>
 			<div className="fixed top-0 left-0 w-full z-[9999]">
 			<ScrollEffect />
       <FloatingDock
         items={[
-          { title: "Home", icon: <RiHome9Fill />, href: "/" },
-          { title: "Search", icon: <BiSearchAlt />, href: "/" },
-          { title: "Post", icon: <IoIosAddCircleOutline />, href: "/" },
-          { title: "Notification", icon: <MdNotificationsActive />, href: "/" },
-          { title: "Profile", icon: <CgProfile />, href: "/" },
+          { title: "Home", icon: <RiHome9Fill />, href: "/home" },
+          { title: "Search", icon: <BiSearchAlt />, href: "/search" },
+          { title: "Post", icon: <IoIosAddCircleOutline />, href: "/post" },
+          { title: "Notification", icon: <MdNotificationsActive />, href: "/notification" },
+          { title: "Profile", icon: <CgProfile />, href: "/profile" },
         ]}
         desktopClassName="fixed bottom-4 left-1/2 -translate-x-1/2"
         mobileClassName="fixed bottom-4 right-4"
