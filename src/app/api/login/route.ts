@@ -24,6 +24,12 @@ export async function POST(req: Request) {
 			return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 })
 		}
 
+		const isFirstLogin = !user.firstLoginAt
+		if (isFirstLogin) {
+			user.firstLoginAt = new Date()
+			await user.save()
+		}
+
 		const token = signSession({ userId: String((user as any)._id) }, SESSION_TTL_SECONDS)
 		const res = NextResponse.json({ success: true, redirect: '/home' })
 		res.cookies.set(COOKIE_NAME, token, {
@@ -33,6 +39,15 @@ export async function POST(req: Request) {
 			path: '/',
 			maxAge: SESSION_TTL_SECONDS,
 		})
+		// Hint cookie for intro (non-HttpOnly, very short lived)
+		if (isFirstLogin) {
+			res.cookies.set('ds_first_login', '1', {
+				path: '/',
+				sameSite: 'lax',
+				maxAge: 300,
+				secure: process.env.NODE_ENV === 'production',
+			})
+		}
 		return res
 	} catch (err) {
 		console.error('Login error', err)

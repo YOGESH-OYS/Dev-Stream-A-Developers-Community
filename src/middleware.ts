@@ -6,13 +6,13 @@ export function middleware(req: NextRequest) {
 	const { pathname } = req.nextUrl
 	if (pathname.startsWith('/home')) {
 		const token = req.cookies.get(COOKIE_NAME)?.value
-		console.log(token)
+		// console.log(token)
 		if (!token) {
 			const url = req.nextUrl.clone()
 			url.pathname = '/auth/login'
 			return NextResponse.redirect(url)
 		}
-		// Rolling session: refresh cookie max-age using same token value
+			// Rolling session: refresh cookie max-age using same token value
 		const res = NextResponse.next()
 		res.cookies.set(COOKIE_NAME, token, {
 			httpOnly: true,

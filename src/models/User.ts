@@ -1,33 +1,32 @@
-import mongoose, { Schema, Document, models, model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose'
 
 export interface IUser extends Document {
 	firstName: string
 	lastName: string
 	username: string
 	email: string
+	passwordHash: string
 	linkedin?: string
 	github?: string
 	bio?: string
-	passwordHash: string
+	firstLoginAt?: Date
 	createdAt: Date
 	updatedAt: Date
 }
 
-const UserSchema = new Schema<IUser>({
-	firstName: { type: String, required: true, trim: true },
-	lastName: { type: String, required: true, trim: true },
-	username: { type: String, required: true, unique: true, trim: true, lowercase: true },
-	email: { type: String, required: true, unique: true, trim: true, lowercase: true },
+try { mongoose.deleteModel('User') } catch {}
+
+const userSchema = new Schema<IUser>({
+	firstName: { type: String, required: true },
+	lastName: { type: String, required: true },
+	username: { type: String, required: true, unique: true },
+	email: { type: String, required: true, unique: true },
+	passwordHash: { type: String, required: true },
 	linkedin: { type: String },
 	github: { type: String },
 	bio: { type: String },
-	passwordHash: { type: String, required: true },
+	firstLoginAt: { type: Date, default: null },
 }, { timestamps: true })
 
-// In dev with hot-reload, the previously compiled model may have an outdated schema.
-// Delete and recompile to ensure we always use the latest schema.
-if (mongoose.models.User) {
-	delete mongoose.models.User
-}
-
-export default model<IUser>('User', UserSchema)
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', userSchema)
+export default User
