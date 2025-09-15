@@ -27,6 +27,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { BiSearchAlt } from "react-icons/bi";
 import { MdNotificationsActive } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
+import { TbDeviceImacCode } from "react-icons/tb";
 
 export const FloatingDock = ({
   items,
@@ -239,7 +240,7 @@ export function FloatingNavbar(){
         items={[
           { title: "Home", icon: <RiHome9Fill />, href: "/home" },
           { title: "Search", icon: <BiSearchAlt />, href: "/search" },
-          { title: "Post", icon: <IoIosAddCircleOutline />, href: "/post" },
+          { title: "DEV-labs", icon: <TbDeviceImacCode />, href: "/DEV-labs" },
           { title: "Notification", icon: <MdNotificationsActive />, href: "/notification" },
           { title: "Profile", icon: <CgProfile />, href: "/profile" },
         ]}
