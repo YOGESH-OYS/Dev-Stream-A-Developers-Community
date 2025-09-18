@@ -5,7 +5,8 @@ import { ProfileSwitchboard } from './ProfileTabsClient'
 
 export default async function Profile(){
 	return(
-		<main className="min-h-screen bg-black text-white overflow-x-hidden relative">
+		<main className="min-h-screen bg-black text-white overflow-x-hidden relative pb-32">
+
       <ScrollEffect />
 			{/* Cover / Template (persistent) */}
 			<section className="relative">
@@ -48,9 +49,10 @@ export default async function Profile(){
 			</section>
 
 			{/* Switchable content below the template */}
-			<section className="w-full md:w-4/5 mx-auto px-4 md:px-0 mt-10">
-				<ProfileSwitchboard />
-			</section>
+			<section className="w-full md:w-4/5 mx-auto px-4 md:px-0 mt-10 min-h-screen">
+  <ProfileSwitchboard />
+</section>
+
 
 			{/* Floating navigation */}
 			<FloatingNavbar />

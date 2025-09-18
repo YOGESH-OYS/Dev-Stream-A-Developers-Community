@@ -5,16 +5,19 @@ import Link from 'next/link'
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 
-export function ProfileSwitchboard(){
-	return (
-		<div className="w-full">
-			<ProfileTabs />
-			<div className="max-w-5xl mx-auto px-8">
-      	<HoverEffect items={projects} />
-    	</div>
-		</div>
-	)
+export function ProfileSwitchboard() {
+  const [active, setActive] = useState<'General'|'Works'|'Products'|'Followers'>('General')
+
+  return (
+    <div className="w-full"> 
+      <ProfileTabs active={active} onChange={setActive} />
+      <div className="mt-6">
+        <TabContent tab={active} />
+      </div>
+    </div>
+  )
 }
+
 
 export const projects = [
   {
@@ -55,14 +58,13 @@ export const projects = [
   },
 ];
 
-function ProfileTabs(){
-	const [active, setActive] = useState<'General'|'Works'|'Products'|'Followers'>('General')
+function ProfileTabs({ active, onChange }:{ active:'General'|'Works'|'Products'|'Followers', onChange:(t:'General'|'Works'|'Products'|'Followers')=>void }){
 	return (
 		<div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-2 flex items-center gap-6 overflow-x-auto">
-			{['General','Works','Products','Followers'].map(label => (
+			{(['General','Works','Products','Followers'] as const).map(label => (
 				<button
 					key={label}
-					onClick={() => setActive(label as any)}
+					onClick={() => onChange(label)}
 					className={
 						`px-5 py-2 rounded-xl text-sm font-medium transition `+
 						(active===label ? 'bg-white text-black shadow-[0_0_20px] shadow-cyan-500/20' : 'text-zinc-300 hover:text-white')
@@ -75,22 +77,20 @@ function ProfileTabs(){
 	)
 }
 
-function TabContent(){
-	const [tab] = useState<'General'|'Works'|'Products'|'Followers'>('General')
+function TabContent({ tab }:{ tab:'General'|'Works'|'Products'|'Followers' }){
 	return (
 		<ContentRouter tab={tab} />
 	)
 }
 
 function ContentRouter({ tab }:{ tab: 'General'|'Works'|'Products'|'Followers' }){
-	return (
-		<div>
-			<CardGrid />
-		</div>
-	)
+	if(tab==='General') return <GeneralSection />
+	if(tab==='Works') return <WorksSection />
+	if(tab==='Products') return <ProductsSection />
+	return <FollowersSection />
 }
 
-function CardGrid(){
+function FollowersSection(){
 	const cards = Array.from({length:6}).map((_,i)=>({
 		name: 'Sophie Bennett',
 		title: i%2? 'A Product Designer focused on intuitive user experiences.' : 'Product Designer who focuses on simplicity & usability.',
@@ -120,6 +120,66 @@ function CardGrid(){
 	)
 }
 
+function GeneralSection(){
+	return (
+		<div className="grid lg:grid-cols-3 gap-6">
+			<div className="lg:col-span-2 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+				<h3 className="text-2xl font-semibold">About</h3>
+				<p className="mt-3 text-zinc-300 leading-relaxed">
+					Full‑stack developer passionate about real‑time collaboration, design systems, and building tools for developers. Shipping TypeScript, Next.js, and WebGL.
+				</p>
+			</div>
+			<div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+				<h4 className="font-semibold">Stats</h4>
+				<div className="mt-4 grid grid-cols-3 gap-4 text-center">
+					<div><div className="text-2xl font-bold">128</div><div className="text-zinc-400 text-sm">Codecasts</div></div>
+					<div><div className="text-2xl font-bold">2.4k</div><div className="text-zinc-400 text-sm">Followers</div></div>
+					<div><div className="text-2xl font-bold">37</div><div className="text-zinc-400 text-sm">Arenas</div></div>
+				</div>
+			</div>
+			<div className="lg:col-span-3 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+				<h4 className="font-semibold">Recent Activity</h4>
+				<ul className="mt-4 space-y-3 text-zinc-300">
+					<li>Opened source: Dev Stream floating dock UI</li>
+					<li>Pushed 6 commits to profile revamp</li>
+					<li>Won Arena “Dark UI showdown”</li>
+				</ul>
+			</div>
+		</div>
+	)
+}
+
+function WorksSection(){
+	const works = Array.from({length:6}).map((_,i)=>(
+		{
+			title: `Interface Kit v${i+1}`,
+			desc: 'Composable React primitives for neon glass layouts.',
+			src: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop'
+		}
+	))
+	return (
+		<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+			{works.map((w,idx)=> (
+				<div key={idx} className="group rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+					<img src={w.src} alt="work" className="h-44 w-full object-cover opacity-90 group-hover:opacity-100 transition" />
+					<div className="p-5">
+						<h4 className="font-semibold">{w.title}</h4>
+						<p className="mt-2 text-sm text-zinc-300">{w.desc}</p>
+						<button className="mt-4 px-4 py-2 rounded-xl bg-white text-black text-sm font-medium hover:shadow-[0_0_20px] hover:shadow-cyan-500/30 transition">Preview</button>
+					</div>
+				</div>
+			))}
+		</div>
+	)
+}
+
+function ProductsSection(){
+	return (
+		<div className="max-w-5xl mx-auto px-2 md:px-8">
+			<HoverEffect items={projects} />
+		</div>
+	)
+}
 
 export const HoverEffect = ({
   items,
@@ -133,7 +193,7 @@ export const HoverEffect = ({
   className?: string;
 }) => {
   let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+ 
   return (
     <div
       className={cn(

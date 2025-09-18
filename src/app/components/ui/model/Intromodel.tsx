@@ -1,6 +1,8 @@
 import Link from "next/link"
+import ScrollEffect from "../../ScroolEffect/scroll"
 import { useEffect , useState } from "react"
 import { TestimonialCarasole } from "../animated-testimonials"
+import { WobbleCardDemo } from "../wobble-card"
 
 export function IntroModal({ onClose }: { onClose: () => void }){
 	const [isScrolling, setIsScrolling] = useState(false)
@@ -27,6 +29,7 @@ export function IntroModal({ onClose }: { onClose: () => void }){
 
 	return (
 		<div className="fixed inset-0 z-[10000]">
+			<ScrollEffect />
 			<div className="absolute inset-0 bg-black/70 backdrop-blur-2xl" />
 			<div className="absolute inset-0 pointer-events-none [background-image:radial-gradient(circle_at_20%_20%,rgba(168,85,247,.18),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(34,211,238,.18),transparent_40%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,.14),transparent_40%)]" />
 			<div className="absolute inset-0 p-0">
@@ -43,17 +46,11 @@ export function IntroModal({ onClose }: { onClose: () => void }){
 						<div className="min-h-full flex flex-col items-center justify-center p-8 md:p-16 text-center">
 							<div className="mb-5 inline-flex items-center gap-3">
 								<span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black font-bold">DS</span>
-								<span className="text-sm text-zinc-300">Welcome to</span>
+								<span className="text-4xl md:text-6xl font-extrabold bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">Dev Stream</span>
 							</div>
-							<h2 className="text-4xl md:text-6xl font-extrabold bg-gradient-to-b from-white to-zinc-300 bg-clip-text text-transparent">Dev Stream</h2>
-							<p className="mt-4 max-w-2xl text-zinc-300 text-lg leading-relaxed">
-								Share Codecasts, fork Sandboxes, and build together in real time. Your profile, streams, and arenas live here.
-							</p>
-							<ul className="mt-8 space-y-4 text-zinc-200">
-								<li className="flex items-center justify-center gap-3"><span className="h-2 w-2 rounded-full bg-cyan-400"></span><span>Create and share 60s Codecasts</span></li>
-								<li className="flex items-center justify-center gap-3"><span className="h-2 w-2 rounded-full bg-fuchsia-400"></span><span>Spin up repro-ready Sandboxes</span></li>
-								<li className="flex items-center justify-center gap-3"><span className="h-2 w-2 rounded-full bg-emerald-400"></span><span>Battle snippets in Dev Arena</span></li>
-							</ul>
+							<br />
+							
+							<WobbleCardDemo />
 							
 							{/* Testimonials Section */}
 							<div className="mt-12 w-full max-w-4xl">
