@@ -45,6 +45,7 @@ export function SplitScreenEditor({
 
   const {
     isRunning,
+    setOutput,
     isSubmitting,
     executionStats,
     consoleOutput,
@@ -113,8 +114,30 @@ export function SplitScreenEditor({
     }
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
+
+
+
+
+
+
+
+
+
+  // IMPORTANT
   const handleRunCode = async () => {
     await runCode(questionId, currentLanguage, code, userId);
+    console.log(code)
+    const requestBody = { kk: code };
+    const response = await fetch('/api/compiler', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+    const result = await response.json();
+    console.log('Backend response:', result);
+    const { output } = result;
+    console.log(output)
+    await setOutput(output)
     if (onRunComplete) {
       onRunComplete({ language: currentLanguage, code });
     }
@@ -126,6 +149,19 @@ export function SplitScreenEditor({
       onSubmitComplete({ language: currentLanguage, code, results });
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const increaseFontSize = () => {
     setFontSize(prev => Math.min(prev + 2, 24));
@@ -212,7 +248,9 @@ export function SplitScreenEditor({
                   height="100%"
                   language={getMonacoLanguage(currentLanguage)}
                   value={code}
-                  onChange={(value) => setCode(value || '')}
+                  onChange={(value) => {
+                    setCode(value || '');
+                  }}
                   onMount={(editor) => {
                     editorRef.current = editor;
                   }}

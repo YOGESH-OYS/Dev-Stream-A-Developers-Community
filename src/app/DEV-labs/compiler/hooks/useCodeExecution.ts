@@ -3,6 +3,7 @@ import { Language, TestCaseResult, ExecutionStats } from '../types';
 import { CodeRunner, RunCodeRequest } from '../utils/codeRunner';
 
 interface UseCodeExecutionReturn {
+  setOutput: React.Dispatch<React.SetStateAction<string>>;
   isRunning: boolean;
   isSubmitting: boolean;
   executionStats: ExecutionStats;
@@ -14,6 +15,7 @@ interface UseCodeExecutionReturn {
 }
 
 export function useCodeExecution(): UseCodeExecutionReturn {
+  const [output , setOutput] = useState<string>('hello machan');
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [executionStats, setExecutionStats] = useState<ExecutionStats>({
@@ -86,6 +88,8 @@ export function useCodeExecution(): UseCodeExecutionReturn {
           <div class="border-t border-border pt-3">
             <div class="${passedCount === totalCount ? 'text-green-400' : 'text-yellow-400'} font-semibold">
               ${passedCount === totalCount ? 'All sample test cases passed!' : `Results: ${passedCount}/${totalCount} test cases passed`}
+              <br />
+              ${output}
             </div>
           </div>
         </div>
@@ -213,6 +217,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
 
   return {
     isRunning,
+    setOutput,
     isSubmitting,
     executionStats,
     consoleOutput,

@@ -88,7 +88,7 @@ export interface RevealedTestCaseData {
   remainingPoints: number;
 }
 
-export type Language = 'javascript' | 'python' | 'cpp' | 'java' | 'c';
+export type Language = 'javascript' | 'python' | 'cpp' | 'java' | 'c' | 'r' ;
 
 export interface LanguageConfig {
   label: string;
