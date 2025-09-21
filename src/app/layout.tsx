@@ -21,6 +21,8 @@ export default function RootLayout({
 	return (
 		<html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
 			<head>
+			<link rel="icon" href="/favicon.ico" />
+
 				{/* Spline viewer web component */}
 				<script defer src="https://unpkg.com/@splinetool/viewer@latest/build/spline-viewer.js"></script>
 			</head>

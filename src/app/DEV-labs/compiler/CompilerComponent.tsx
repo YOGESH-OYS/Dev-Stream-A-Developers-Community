@@ -194,6 +194,7 @@ export function CompilerComponent({
 
   return (
     <div className={`max-w-7xl mx-auto space-y-16 ${className}`} data-testid="compiler-component">
+      <br />
       {/* Question Display Section */}
       {currentQuestionData && (
         <QuestionDisplay question={currentQuestionData.question} />
