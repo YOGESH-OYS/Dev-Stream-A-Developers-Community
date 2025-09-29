@@ -1,60 +1,97 @@
-import { NextRequest , NextResponse } from "next/server";
-
-const reqBody = {
-  "source_code": "",
-  "language_id": "62",
-  "number_of_runs": null,
-  "stdin": "Judge0",
-  "expected_output": null,
-  "cpu_time_limit": null,
-  "cpu_extra_time": null,
-  "wall_time_limit": null,
-  "memory_limit": null,
-  "stack_limit": null,
-  "max_processes_and_or_threads": null,
-  "enable_per_process_and_thread_time_limit": null,
-  "enable_per_process_and_thread_memory_limit": null,
-  "max_file_size": null,
-  "enable_network": null
-}
+import { TestCase, TestCaseResult, Language } from '../../DEV-labs/compiler/types/index';
 
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// Mock API request function for development
+export async function mockApiRequest(method: string, url: string, data?: any): Promise<Response> {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+  
+  if (url.includes('/api/runcode')) {
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { kk } = body;
-
-  const toCloud = { ...reqBody, source_code: kk };
-
-  // Submit code and get token
-  const submitResponse = await fetch("http://13.201.45.96:2358/submissions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(toCloud),
-  });
-  const { token } = await submitResponse.json();
-  console.log(token)
-  // Poll result with retries and delay
-  let result = null;
-  let retries = 15; // Number of attempts
-  while (retries > 0) {
-    const res = await fetch(`http://13.201.45.96:2358/submissions/${token}`);
-    const data = await res.json();
-
-    if (data.status.description !== "In Queue" && data.status.description !== "Processing") {
-      result = data;
-      break; // Exit loop if done
-    }
-
-    retries--;
-    await wait(500); // wait half a second before retrying
   }
 
-  console.log(result)
-  return NextResponse.json({
-    receivedCode: toCloud,
-    output: result?.stdout ?? null,
-    status: result?.status.description ?? "Timeout or unknown",
+  // Mock response based on the endpoint
+  if (url.includes('/api/run-code')) {
+    const mockResults: TestCaseResult[] = [
+      {
+        testCaseId: '1',
+        status: 'passed',
+        actualOutput: '[0,1]',
+        executionTime: Math.floor(Math.random() * 3) + 1,
+        memoryUsed: 14 + Math.random() * 0.5,
+        isHidden: false,
+      },
+      {
+        testCaseId: '2',
+        status: 'passed',
+        actualOutput: '[1,2]',
+        executionTime: Math.floor(Math.random() * 3) + 1,
+        memoryUsed: 14 + Math.random() * 0.5,
+        isHidden: false,
+      },
+    ];
+    
+    return new Response(JSON.stringify({
+      status: 'success',
+      results: mockResults,
+      totalPassed: mockResults.length,
+      totalTests: mockResults.length,
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  
+  if (url.includes('/api/submit')) {
+    const mockResults: TestCaseResult[] = [
+      {
+        testCaseId: '1',
+        status: 'passed',
+        actualOutput: '[0,1]',
+        executionTime: Math.floor(Math.random() * 3) + 1,
+        memoryUsed: 14 + Math.random() * 0.5,
+        isHidden: false,
+      },
+      {
+        testCaseId: '2',
+        status: 'passed',
+        actualOutput: '[1,2]',
+        executionTime: Math.floor(Math.random() * 3) + 1,
+        memoryUsed: 14 + Math.random() * 0.5,
+        isHidden: false,
+      },
+      {
+        testCaseId: '3',
+        status: Math.random() > 0.3 ? 'passed' : 'failed',
+        actualOutput: Math.random() > 0.3 ? '[2,3]' : '[1,3]',
+        executionTime: Math.floor(Math.random() * 5) + 1,
+        memoryUsed: 14 + Math.random() * 1,
+        isHidden: true,
+      },
+      {
+        testCaseId: '4',
+        status: Math.random() > 0.2 ? 'passed' : 'failed',
+        actualOutput: Math.random() > 0.2 ? '[0,4]' : '[1,4]',
+        executionTime: Math.floor(Math.random() * 5) + 1,
+        memoryUsed: 14 + Math.random() * 1,
+        isHidden: true,
+      },
+    ];
+    
+    return new Response(JSON.stringify({
+      submissionId: `sub_${Date.now()}`,
+      status: 'completed',
+      passedTestCases: mockResults.filter(r => r.status === 'passed').length,
+      totalTestCases: mockResults.length,
+      results: mockResults,
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  
+  return new Response(JSON.stringify({ error: 'Not found' }), {
+    status: 404,
+    headers: { 'Content-Type': 'application/json' },
   });
 }

@@ -34,33 +34,64 @@ export const languageConfigs: LanguageConfig[] = [
 ];
 
 export const defaultStarterCode: Record<Language, string> = {
-  javascript: `var twoSum = function(nums, target) {
+javascript: 
+
+`function main() {
     // Your code here
-    
-};`,
-  python: `def twoSum(nums, target):
-    # Your code here
-    pass`,
-  cpp: `#include<vector>
+}
+
+main();
+`,
+
+
+python: 
+
+
+`def main():
+  # Your code here
+pass
+
+if __name__ == "__main__":
+main()
+`,
+
+
+cpp: 
+
+
+`#include <iostream>
 using namespace std;
 
-vector<int> twoSum(vector<int>& nums, int target) {
+int main() {
     // Your code here
-    
-}`,
-  java: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Your code here
-        
-    }
-}`,
-  c: `#include<stdio.h>
-#include<stdlib.h>
 
-int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    return 0;
+}
+`,
+
+
+java: 
+
+
+`import java.util.*;
+public class Main {
+  public static void main(String[] args) {
+      // Your code here
+
+  }
+}
+`,
+
+c: 
+
+`#include <stdio.h>
+
+int main() {
     // Your code here
-    
-}`,
+
+    return 0;
+}
+`,
 };
 
 export const monacoEditorConfig: MonacoEditorConfig = {

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState,useEffect, useCallback } from 'react';
 import { Language, TestCaseResult, ExecutionStats } from '../types';
 import { CodeRunner, RunCodeRequest } from '../utils/codeRunner';
 
@@ -15,14 +15,24 @@ interface UseCodeExecutionReturn {
 }
 
 export function useCodeExecution(): UseCodeExecutionReturn {
-  const [output , setOutput] = useState<string>('hello machan');
+
+  const [output , setOutput] = useState<string>('');
+
+  useEffect(() => {
+    if (output) {
+      console.log('Output updated', output);
+    }
+  }, [output]);
+
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [executionStats, setExecutionStats] = useState<ExecutionStats>({
-    executionTime: '--',
-    memoryUsage: '--',
-    executionStatus: 'Ready',
-  });
+  const [executionStats, setExecutionStats] = useState<ExecutionStats>(
+    {
+      executionTime: '--',
+      memoryUsage: '--',
+      executionStatus: 'Ready',
+    }
+  );
   const [consoleOutput, setConsoleOutput] = useState(`
     <div class="flex items-center gap-2">
       <i class="fas fa-terminal text-primary"></i>
@@ -96,7 +106,8 @@ export function useCodeExecution(): UseCodeExecutionReturn {
       `;
 
       setConsoleOutput(outputHtml);
-    } catch (error) {
+    } 
+    catch (error) {
       console.error('Code execution failed:', error);
       setExecutionStats(prev => ({ ...prev, executionStatus: 'Error' }));
       setConsoleOutput(`
@@ -108,7 +119,8 @@ export function useCodeExecution(): UseCodeExecutionReturn {
           ${error instanceof Error ? error.message : 'Unknown error occurred'}
         </div>
       `);
-    } finally {
+    } 
+    finally {
       setIsRunning(false);
     }
   }, [isRunning, isSubmitting]);

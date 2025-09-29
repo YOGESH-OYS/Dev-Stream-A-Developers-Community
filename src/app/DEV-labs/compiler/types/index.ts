@@ -1,3 +1,5 @@
+console.log("IN types")
+
 export interface CompilerComponentProps {
   questionData?: QuestionData;
   onSubmit?: (results: TestResults) => void;
@@ -88,7 +90,7 @@ export interface RevealedTestCaseData {
   remainingPoints: number;
 }
 
-export type Language = 'javascript' | 'python' | 'cpp' | 'java' | 'c' | 'r' ;
+export type Language = 'javascript' | 'python' | 'cpp' | 'java' | 'c' ;
 
 export interface LanguageConfig {
   label: string;
@@ -111,4 +113,22 @@ export interface MonacoEditorConfig {
   guides: { bracketPairs: boolean };
   formatOnPaste: boolean;
   formatOnType: boolean;
+}
+
+export interface RequestBody {
+  source_code: string;
+  language_id: number;
+  number_of_runs: number | null;
+  stdin: string;
+  expected_output: string | null;
+  cpu_time_limit: number | null;
+  cpu_extra_time: number | null;
+  wall_time_limit: number | null;
+  memory_limit: number | null;
+  stack_limit: number | null;
+  max_processes_and_or_threads: number | null;
+  enable_per_process_and_thread_time_limit: boolean | null;
+  enable_per_process_and_thread_memory_limit: boolean | null;
+  max_file_size: number | null;
+  enable_network: boolean | null;
 }

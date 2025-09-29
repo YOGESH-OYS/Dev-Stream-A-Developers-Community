@@ -26,14 +26,8 @@ interface SplitScreenEditorProps {
   onSubmitComplete?: (results: any) => void;
 }
 
-export function SplitScreenEditor({ 
-  questionId, 
-  starterCode, 
-  userId,
-  onRunComplete,
-  onSubmitComplete 
-}: SplitScreenEditorProps) {
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('javascript');
+export function SplitScreenEditor({ questionId, starterCode, userId, onRunComplete, onSubmitComplete }: SplitScreenEditorProps) {
+  const [currentLanguage, setCurrentLanguage] = useState<Language>('java');
   const [leftPaneWidth, setLeftPaneWidth] = useState(50);
   const [isResizing, setIsResizing] = useState(false);
   const [code, setCode] = useState('');
@@ -64,9 +58,10 @@ export function SplitScreenEditor({
 
   // Set starter code when language changes
   useEffect(() => {
-    const code = starterCode[currentLanguage] || defaultStarterCode[currentLanguage];
+    // const code = starterCode[currentLanguage] || defaultStarterCode[currentLanguage];
+    const code = defaultStarterCode[currentLanguage];
     setCode(code);
-  }, [currentLanguage, starterCode]);
+  }, [currentLanguage, defaultStarterCode]);
 
   // Handle language change
   const handleLanguageChange = (language: string) => {
@@ -126,18 +121,6 @@ export function SplitScreenEditor({
   // IMPORTANT
   const handleRunCode = async () => {
     await runCode(questionId, currentLanguage, code, userId);
-    console.log(code)
-    const requestBody = { kk: code };
-    const response = await fetch('/api/compiler', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    });
-    const result = await response.json();
-    console.log('Backend response:', result);
-    const { output } = result;
-    console.log(output)
-    await setOutput(output)
     if (onRunComplete) {
       onRunComplete({ language: currentLanguage, code });
     }
