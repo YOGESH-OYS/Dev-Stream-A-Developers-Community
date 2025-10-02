@@ -5,7 +5,7 @@ import { ProfileSwitchboard } from './ProfileTabsClient'
 
 export default async function Profile(){
 	return(
-		<main className="min-h-screen bg-black text-white overflow-x-hidden relative pb-32">
+		<main className="min-h-screen bg-black text-white overflow-x-hidden relative">
 
       <ScrollEffect />
 			{/* Cover / Template (persistent) */}

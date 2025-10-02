@@ -16,19 +16,21 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{ children: React.ReactNode }>) {
-	return (
-		<html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
-			<head>
-			<link rel="icon" href="/favicon.ico" />
-
-				{/* Spline viewer web component */}
-				<script defer src="https://unpkg.com/@splinetool/viewer@latest/build/spline-viewer.js"></script>
-			</head>
-			<body className="antialiased bg-[#0B0B0E] text-zinc-100">
-				{children}
-			</body>
-		</html>
-	)
+  return (
+    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <script defer src="https://unpkg.com/@splinetool/viewer@latest/build/spline-viewer.js"></script>
+      </head>
+      <body className="antialiased bg-[#0B0B0E] text-zinc-100">
+        <div id="scroll-wrapper" style={{ overflowY: 'auto', height: '100vh' }}>
+          <div id="scroll-content">
+            {children}
+          </div>
+        </div>
+      </body>
+    </html>
+  );
 }

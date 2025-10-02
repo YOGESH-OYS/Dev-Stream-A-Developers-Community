@@ -71,7 +71,7 @@ function DEVlabs() {
       <div className="absolute top-40 right-20 w-32 h-32 bg-blue-500/20 rounded-full blur-xl animate-pulse delay-1000 pointer-events-none z-0"></div>
       <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-pink-500/20 rounded-full blur-xl animate-pulse delay-2000 pointer-events-none z-0"></div>
 
-      <div className="relative z-10 container mx-auto px-4 py-20">
+      <div className="relative z-10 container mx-auto px-4 py-20 pb-30">
         {/* Hero Section */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           {/* Main Heading */}
@@ -89,7 +89,7 @@ function DEVlabs() {
           </div>
 
           {/* Video Input Section */}
-          <div className="max-w-2xl mx-auto mb-12 animate-fade-in-up delay-600">
+          <div className="max-w-3xl mx-auto mb-12 animate-fade-in-up delay-600">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
               <div className="relative bg-slate-800/50 backdrop-blur-xl border border-white/20 rounded-2xl p-2">
@@ -184,7 +184,7 @@ export default function dev_labs(){
   return(
     <main>
       <DEVlabs />
-      {/* <FloatingNavbar /> */}
+      <FloatingNavbar />
     </main>
   );
 }

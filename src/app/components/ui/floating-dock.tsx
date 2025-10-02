@@ -235,7 +235,6 @@ export function FloatingNavbar(){
 	return(
 		<main>
 			<div className="fixed top-0 left-0 w-full z-[9999]">
-			<ScrollEffect />
       <FloatingDock
         items={[
           { title: "Home", icon: <RiHome9Fill />, href: "/home" },
