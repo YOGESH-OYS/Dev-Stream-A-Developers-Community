@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { FloatingNavbar } from "../components/ui/floating-dock";
 import { Play, Sparkles, Zap, Target, ArrowRight, Youtube, BookOpen, Code, Brain } from 'lucide-react';
 
-export default function DEVlabs() {
+function DEVlabs() {
   const [videoUrl, setVideoUrl] = useState('');
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,6 +27,12 @@ export default function DEVlabs() {
       window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
     }, 2000);
   };
+
+  // Ensure any external scroll locks don't apply here
+  useEffect(() => {
+    document.documentElement.classList.remove('overflow-hidden');
+    document.body.classList.remove('overflow-hidden');
+  }, []);
 
   const features = [
     {
@@ -52,20 +58,18 @@ export default function DEVlabs() {
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-800/2 via-stale-900 to-slate-700 relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-to-br from-purple-800/20 via-slate-900 to-slate-700 relative overflow-x-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 opacity-20 pointer-events-none z-0">
         <div className="w-full h-full" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
         }}></div>
       </div>
       
       {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
-      <div className="absolute top-40 right-20 w-32 h-32 bg-blue-500/20 rounded-full blur-xl animate-pulse delay-1000"></div>
-      <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-pink-500/20 rounded-full blur-xl animate-pulse delay-2000"></div>
-
-      <FloatingNavbar />
+      <div className="absolute top-20 left-10 w-20 h-20 bg-purple-500/20 rounded-full blur-xl animate-pulse pointer-events-none z-0"></div>
+      <div className="absolute top-40 right-20 w-32 h-32 bg-blue-500/20 rounded-full blur-xl animate-pulse delay-1000 pointer-events-none z-0"></div>
+      <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-pink-500/20 rounded-full blur-xl animate-pulse delay-2000 pointer-events-none z-0"></div>
 
       <div className="relative z-10 container mx-auto px-4 py-20">
         {/* Hero Section */}
@@ -85,7 +89,7 @@ export default function DEVlabs() {
           </div>
 
           {/* Video Input Section */}
-          <div className="max-w-2x4 mx-auto mb-12 animate-fade-in-up delay-600">
+          <div className="max-w-2xl mx-auto mb-12 animate-fade-in-up delay-600">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
               <div className="relative bg-slate-800/50 backdrop-blur-xl border border-white/20 rounded-2xl p-2">
@@ -137,30 +141,33 @@ export default function DEVlabs() {
         </div>
 
         {/* Features Section */}
-        <div className={`transition-all duration-1000 overflow-hidden ${showFeatures ? 'opacity-100' : 'max-h-0 opacity-0'}`}>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="group bg-slate-800/30 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-500 hover:transform hover:scale-105 animate-fade-in-up"
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <div className="text-purple-400 mb-4 group-hover:text-pink-400 transition-colors duration-300">
-                  {feature.icon}
+        {showFeatures && (
+          <div className="transition-opacity duration-500 opacity-100">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-10">
+              {features.map((feature, index) => (
+                <div
+                  key={index}
+                  className="group bg-slate-800/30 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-purple-500/50 transition-all duration-500 hover:transform hover:scale-105 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                >
+                  <div className="text-purple-400 mb-4 group-hover:text-pink-400 transition-colors duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-200 transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-200 transition-colors duration-300">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
 
         {/* Bottom CTA */}
-        <div className="text-center mt-20 animate-fade-in-up delay-1200">
+        <div className="text-center mt-16 animate-fade-in-up delay-1200">
           <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-xl border border-purple-500/30 rounded-2xl px-8 py-4">
             <Zap className="w-6 h-6 text-yellow-400" />
             <span className="text-white font-semibold">Ready to revolutionize your learning?</span>
@@ -168,6 +175,16 @@ export default function DEVlabs() {
         </div>
       </div>
 
+    </main>
+  );
+}
+
+
+export default function dev_labs(){
+  return(
+    <main>
+      <DEVlabs />
+      {/* <FloatingNavbar /> */}
     </main>
   );
 }
