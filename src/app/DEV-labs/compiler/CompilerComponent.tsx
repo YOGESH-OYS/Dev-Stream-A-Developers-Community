@@ -63,35 +63,7 @@ const mockQuestionData: QuestionData = {
     ],
     hidden: []
   },
-  starterCode: {
-    javascript: `var twoSum = function(nums, target) {
-    // Your code here
-    
-};`,
-    python: `def twoSum(nums, target):
-    # Your code here
-    pass`,
-    cpp: `#include<vector>
-using namespace std;
-
-vector<int> twoSum(vector<int>& nums, int target) {
-    // Your code here
-    
-}`,
-    java: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        // Your code here
-        
-    }
-}`,
-    c: `#include<stdio.h>
-#include<stdlib.h>
-
-int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
-    // Your code here
-    
-}`
-  }
+  starterCode:{}
 };
 
 export function CompilerComponent({ 
@@ -237,4 +209,3 @@ export function CompilerComponent({
 }
 
 export default CompilerComponent;
-export type { CompilerComponentProps, QuestionData, TestResults, TestCaseResult } from './types';

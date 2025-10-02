@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { FloatingNavbar } from "../components/ui/floating-dock";
 import { Play, Sparkles, Zap, Target, ArrowRight, Youtube, BookOpen, Code, Brain } from 'lucide-react';
+import ScrollEffect from '../components/ScroolEffect/scroll';
 
 function DEVlabs() {
   const [videoUrl, setVideoUrl] = useState('');
@@ -16,6 +17,8 @@ function DEVlabs() {
     setIsValidUrl(youtubeRegex.test(videoUrl));
   }, [videoUrl]);
 
+
+
   const handleStartLearning = async () => {
     if (!isValidUrl) return;
     
@@ -28,11 +31,6 @@ function DEVlabs() {
     }, 2000);
   };
 
-  // Ensure any external scroll locks don't apply here
-  useEffect(() => {
-    document.documentElement.classList.remove('overflow-hidden');
-    document.body.classList.remove('overflow-hidden');
-  }, []);
 
   const features = [
     {
@@ -60,6 +58,7 @@ function DEVlabs() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-800/20 via-slate-900 to-slate-700 relative overflow-x-hidden">
       {/* Background Effects */}
+      <ScrollEffect />
       <div className="absolute inset-0 opacity-20 pointer-events-none z-0">
         <div className="w-full h-full" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
