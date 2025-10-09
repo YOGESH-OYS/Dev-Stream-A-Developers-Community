@@ -64,7 +64,6 @@ export function useCodeExecution(): UseCodeExecutionReturn {
       };
 
       const response = await CodeRunner.runCode(request);
-      
       const passedCount = response.totalPassed;
       const totalCount = response.totalTests;
       const maxTime = Math.max(...response.results.map(r => r.executionTime || 0));

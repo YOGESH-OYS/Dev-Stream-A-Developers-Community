@@ -5,13 +5,24 @@ import { TestCase, TestCaseResult, Language } from '../../DEV-labs/compiler/type
 export async function mockApiRequest(method: string, url: string, data?: any): Promise<Response> {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-  
-  if (url.includes('/api/runcode')) {
 
-  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Mock response based on the endpoint
   if (url.includes('/api/run-code')) {
+    console.log(data.questionId)
     const mockResults: TestCaseResult[] = [
       {
         testCaseId: '1',
@@ -42,6 +53,21 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
     });
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   if (url.includes('/api/submit')) {
     const mockResults: TestCaseResult[] = [
       {

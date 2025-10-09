@@ -1,57 +1,73 @@
 import mongoose , {Model,Document,Schema} from 'mongoose'
+import { Example, TestCase } from '@/app/DEV-labs/compiler/types'
 
-interface Question {
-  question_id : number
-  question :string
-}
-
-interface Testcase{
-  question_id :number
-  type :string
-  cases :string
+export interface TestCase_Model extends Document{
+  title : string;
+  question_id : string;
+  question : string;
+  examples : Example[];
+  constraints :string[];
+  testcases_reveal :TestCase[];
+  testcases_hidden :TestCase[];
 }
 
 try { mongoose.deleteModel('Testcase') } catch {}
-// Inner schemas for clarity and reusability
-const QuestionSchema = new Schema<Question>(
-  {
-    question_id: { type: Number, required: true },
-    question: { type: String, required: true },
-  },
-  { _id: false }
-);
 
-const TestcaseSchema = new Schema<Testcase>(
-  {
-    question_id: { type: Number, required: true },
-    type: { type: String, required: true },
-    cases: { type: String, required: true },
-  },
-  { _id: false }
-);
-
-
-export interface TestCases extends Document{
-  title :string
-  timestamp :Date
-  session :number
-  testcase : {
-    question : Question
-    testcases : Testcase[]
-  }
-}
-
-// Main schema combining everything
-const UserDataSchema = new Schema<TestCases>({
-  title: { type: String, required: true },
-  timestamp: { type: Date, default: null },
-  session: { type: Number, required: true },
-  testcase: {
-    question: { type: QuestionSchema, required: true },
-    testcases: { type: [TestcaseSchema], required: true },
-  }
+// Subschema for Example
+const exampleSchema = new Schema<Example>({
+  input: { type: String, required: true },
+  output: { type: String, required: true },
+  explanation: { type: String }
 });
 
-const Userdata : Model<TestCases> = mongoose.model<TestCases>('Testcase',UserDataSchema)
+// Subschema for TestCase
+const testCaseSchema = new Schema<TestCase>({
+  id: { type: String, required: true },
+  questionId: { type: String, required: true },
+  input: { type: String, required: true },
+  expectedOutput: { type: String, required: true },
+  isHidden: { type: Boolean, required: true },
+  orderIndex: { type: Number, required: true }
+});
 
-export default Userdata
+// Main schema combining everything
+const UserDataSchema = new Schema<TestCase_Model>({
+  title: {type:String , required:true},
+  question_id: {type:String , required:true},
+  question: {type:String , required:true},
+  examples: {type:[exampleSchema],required:true},
+  constraints: {type:[String],required: true},
+  testcases_reveal: {type:[testCaseSchema],required:true},
+  testcases_hidden: {type:[testCaseSchema],required:true}
+});
+// const UserDataSchem = new Schema<TestCase_Model>({
+//   title: {String },
+//   question_id: {String },
+//   question: {String },
+//   examples: [
+//     input: {  String },
+//     output: { String},
+//     explanation: {  String }
+//   ],
+//   constraints: [String],
+//   testcases_reveal: [
+//     id: { String },
+//     questionId: {  String},
+//     input: { String },
+//     expectedOutput: {  String},
+//     isHidden: false,
+//     orderIndex: {  Number }
+//   ],
+//   testcases_hidden: [
+//     id: {  String },
+//     questionId: {  String},
+//     input: { String },
+//     expectedOutput: {  String},
+//     isHidden: true,
+//     orderIndex: {  Number }
+//   ]
+// });
+
+const TCdata : Model<TestCase_Model> = mongoose.model<TestCase_Model>('Testcase',UserDataSchema)
+
+export default TCdata;

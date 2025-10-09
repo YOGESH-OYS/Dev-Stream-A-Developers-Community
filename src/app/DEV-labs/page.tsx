@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { FloatingNavbar } from "../components/ui/floating-dock";
 import { Play, Sparkles, Zap, Target, ArrowRight, Youtube, BookOpen, Code, Brain } from 'lucide-react';
 import ScrollEffect from '../components/ScroolEffect/scroll';
+import LoadingCreation from '../components/ui/model/LoadingCreation';
+import { ProcessUrl } from './compiler/hooks/ProcessUrl';
 
 function DEVlabs() {
   const [videoUrl, setVideoUrl] = useState('');
@@ -21,14 +23,21 @@ function DEVlabs() {
 
   const handleStartLearning = async () => {
     if (!isValidUrl) return;
-    
     setIsLoading(true);
+
+    const response = await ProcessUrl(videoUrl);
+    console.log(response.json());
+
     // Simulate processing time
-    setTimeout(() => {
-      setIsLoading(false);
-      // Redirect to learning session
-      window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
-    }, 2000);
+    if (response) {
+      console.log(response)
+      console.log('here is your backend')
+      setTimeout(()=>{
+        setIsLoading(false);
+        // Redirect to learning session
+        window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
+      },10000)
+    }
   };
 
 
@@ -58,6 +67,7 @@ function DEVlabs() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-800/20 via-slate-900 to-slate-700 relative overflow-x-hidden">
       {/* Background Effects */}
+      {isLoading && <LoadingCreation />}
       <ScrollEffect />
       <div className="absolute inset-0 opacity-20 pointer-events-none z-0">
         <div className="w-full h-full" style={{
