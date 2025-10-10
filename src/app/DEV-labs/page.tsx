@@ -24,19 +24,23 @@ function DEVlabs() {
   const handleStartLearning = async () => {
     if (!isValidUrl) return;
     setIsLoading(true);
-
+  
     const response = await ProcessUrl(videoUrl);
-    console.log(response.json());
-
-    // Simulate processing time
-    if (response) {
-      console.log(response)
-      console.log('here is your backend')
-      setTimeout(()=>{
+  
+    // ✅ parse once
+    const data = await response.json();
+    console.log('Parsed response:', data);
+  
+    if (response.ok) {
+      console.log('Here is your backend');
+      console.log(data); // reuse parsed data
+      setTimeout(() => {
         setIsLoading(false);
         // Redirect to learning session
         window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
-      },10000)
+      }, 50000);
+    } else {
+      console.error('Error from backend:', data);
     }
   };
 

@@ -7,8 +7,7 @@ export interface TestCase_Model extends Document{
   question : string;
   examples : Example[];
   constraints :string[];
-  testcases_reveal :TestCase[];
-  testcases_hidden :TestCase[];
+  testcases :TestCase[];
 }
 
 try { mongoose.deleteModel('Testcase') } catch {}
@@ -37,36 +36,8 @@ const UserDataSchema = new Schema<TestCase_Model>({
   question: {type:String , required:true},
   examples: {type:[exampleSchema],required:true},
   constraints: {type:[String],required: true},
-  testcases_reveal: {type:[testCaseSchema],required:true},
-  testcases_hidden: {type:[testCaseSchema],required:true}
+  testcases: {type:[testCaseSchema],required:true}
 });
-// const UserDataSchem = new Schema<TestCase_Model>({
-//   title: {String },
-//   question_id: {String },
-//   question: {String },
-//   examples: [
-//     input: {  String },
-//     output: { String},
-//     explanation: {  String }
-//   ],
-//   constraints: [String],
-//   testcases_reveal: [
-//     id: { String },
-//     questionId: {  String},
-//     input: { String },
-//     expectedOutput: {  String},
-//     isHidden: false,
-//     orderIndex: {  Number }
-//   ],
-//   testcases_hidden: [
-//     id: {  String },
-//     questionId: {  String},
-//     input: { String },
-//     expectedOutput: {  String},
-//     isHidden: true,
-//     orderIndex: {  Number }
-//   ]
-// });
 
 const TCdata : Model<TestCase_Model> = mongoose.model<TestCase_Model>('Testcase',UserDataSchema)
 

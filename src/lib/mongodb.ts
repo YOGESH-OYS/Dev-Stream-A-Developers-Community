@@ -23,7 +23,6 @@ export async function connectDB() {
       bufferCommands: false,
     }).then(async (mongoose) => {
       console.log("✅ Connected to MongoDB");
-      const testcasedata = await TestCaseData.create({})
       return mongoose;
     }).catch((err) => {
       console.error("❌ MongoDB connection error:", err);

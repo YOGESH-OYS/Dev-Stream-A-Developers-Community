@@ -48,10 +48,8 @@ export class CodeRunner {
       },
       body: JSON.stringify(request),
     });
-    
-    const res: ProcessUrlResponse = await response.json();
-    
-    return response
+        
+    return response;
   }
 
   static async submitCode(request: RunCodeRequest): Promise<SubmitCodeResponse> {
