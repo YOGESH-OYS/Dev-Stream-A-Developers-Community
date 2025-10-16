@@ -6,12 +6,20 @@ import { Play, Sparkles, Zap, Target, ArrowRight, Youtube, BookOpen, Code, Brain
 import ScrollEffect from '../components/ScroolEffect/scroll';
 import LoadingCreation from '../components/ui/model/LoadingCreation';
 import { ProcessUrl } from './compiler/hooks/ProcessUrl';
+import ChatSidebar from './components/ChatSidebar';
+import ReactDOM from 'react-dom';
 
-function DEVlabs() {
+export default function DEVlabs() {
   const [videoUrl, setVideoUrl] = useState('');
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showFeatures, setShowFeatures] = useState(false);
+  const [sidebarOpen,setsidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Validate YouTube URL
   useEffect(() => {
@@ -69,7 +77,7 @@ function DEVlabs() {
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-800/20 via-slate-900 to-slate-700 relative overflow-x-hidden">
+    <main className={`min-h-screen bg-gradient-to-br from-purple-800/20 via-slate-900 to-slate-700 relative overflow-x-hidden ${sidebarOpen ? 'overflow-hidden h-screen' : 'overflow-auto min-h-screen'}`}>
       {/* Background Effects */}
       {isLoading && <LoadingCreation />}
       <ScrollEffect />
@@ -178,6 +186,13 @@ function DEVlabs() {
           </div>
         )}
 
+        {/* Chat sidebar */}
+        {mounted && ReactDOM.createPortal(
+        <ChatSidebar 
+        isOpen={sidebarOpen} 
+        onToggle={() => setsidebarOpen(!sidebarOpen)} />,
+        document.body  // portals sidebar directly under body, outside scroll-wrapper
+        )}
 
         {/* Bottom CTA */}
         <div className="text-center mt-16 animate-fade-in-up delay-1200">
@@ -187,16 +202,6 @@ function DEVlabs() {
           </div>
         </div>
       </div>
-
-    </main>
-  );
-}
-
-
-export default function dev_labs(){
-  return(
-    <main>
-      <DEVlabs />
       <FloatingNavbar />
     </main>
   );
