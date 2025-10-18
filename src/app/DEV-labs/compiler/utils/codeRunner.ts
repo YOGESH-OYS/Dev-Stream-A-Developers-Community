@@ -1,4 +1,4 @@
-import { TestCase, TestCaseResult, Language } from '../types';
+import { TestCaseResult, Language } from '../types';
 import { mockApiRequest } from '@/app/api/compiler/route';
 
 export interface ProcessUrl{

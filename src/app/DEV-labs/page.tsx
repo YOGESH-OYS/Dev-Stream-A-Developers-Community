@@ -16,6 +16,7 @@ export default function DEVlabs() {
   const [showFeatures, setShowFeatures] = useState(false);
   const [sidebarOpen,setsidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -30,24 +31,32 @@ export default function DEVlabs() {
 
 
   const handleStartLearning = async () => {
+    
     if (!isValidUrl) return;
     setIsLoading(true);
   
     const response = await ProcessUrl(videoUrl);
-  
-    // ✅ parse once
     const data = await response.json();
-    console.log('Parsed response:', data);
   
-    if (response.ok) {
-      console.log('Here is your backend');
-      console.log(data); // reuse parsed data
-      setTimeout(() => {
-        setIsLoading(false);
-        // Redirect to learning session
-        window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
-      }, 50000);
-    } else {
+    try{
+      if (response.ok) {
+        // message before saving in database
+        setShowMessage(true);
+        const res = await fetch('/api/testcase', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({data}),
+        });
+        setTimeout(() => {
+          setIsLoading(false);
+          // Redirect to learning session
+          window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
+        }, 50000);
+      }
+    }
+    catch{
       console.error('Error from backend:', data);
     }
   };
@@ -79,7 +88,7 @@ export default function DEVlabs() {
   return (
     <main className={`min-h-screen bg-gradient-to-br from-purple-800/20 via-slate-900 to-slate-700 relative overflow-x-hidden ${sidebarOpen ? 'overflow-hidden h-screen' : 'overflow-auto min-h-screen'}`}>
       {/* Background Effects */}
-      {isLoading && <LoadingCreation />}
+      {isLoading && <LoadingCreation showMessage={showMessage} />}
       <ScrollEffect />
       <div className="absolute inset-0 opacity-20 pointer-events-none z-0">
         <div className="w-full h-full" style={{

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import TestCaseData from '@/models/Usecases';
 const MONGO_URI = process.env.MONGODB_URI as string;
 
 if (!MONGO_URI) {

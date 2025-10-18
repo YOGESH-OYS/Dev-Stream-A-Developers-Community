@@ -4,12 +4,14 @@ interface LoadingOverlayProps {
   width?: string | number;
   height?: string | number;
   visible?: boolean;
+  showMessage?: boolean;
 }
 
 const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
   width = "400px",
   height = "400px",
   visible = true,
+  showMessage = false,
 }) => {
   if (!visible) return null;
 
@@ -24,6 +26,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         backdropFilter: "blur(5px)", // blur background
         backgroundColor: "rgba(0,0,0,0.3)", // semi-transparent overlay
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         zIndex: 9999, // on top of everything
@@ -38,7 +41,20 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
         allowFullScreen
         allow="autoplay"
       />
+      { showMessage && (
+        <div
+          style={{
+            marginTop: "20px",
+            fontSize: "20px",
+            color: "#ffffff",
+            fontWeight: 500,
+          }}
+        >
+          This takes a few seconds...
+        </div>
+      )}
     </div>
+    
   );
 };
 
