@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import ScrollEffect from '../../components/ScroolEffect/scroll'
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function LoginPage() {
 	return (
@@ -98,7 +99,9 @@ export default function LoginPage() {
 function SignInForm() {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
-
+	const searchParams = useSearchParams()
+	const redirectTo = searchParams.get('redirectBack') || '/home'
+	
 	async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault()
 		setError(null)
@@ -111,7 +114,7 @@ function SignInForm() {
 			const res = await fetch('/api/login', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ emailOrUsername, password })
+				body: JSON.stringify({ emailOrUsername, password , redirectTo})
 			})
 			const data = await res.json()
 			if (!res.ok || !data.success) {

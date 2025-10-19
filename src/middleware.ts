@@ -4,12 +4,14 @@ import { COOKIE_NAME, SESSION_TTL_SECONDS } from './lib/auth'
 
 export function middleware(req: NextRequest) {
 	const { pathname } = req.nextUrl
-	if (pathname.startsWith('/home')) {
+	const toberedirect = pathname
+	if (pathname.startsWith('/home') || pathname.startsWith('/DEV-labs') || pathname.startsWith('/search') || pathname.startsWith('/notification') || pathname.startsWith('/profile') ) {
 		const token = req.cookies.get(COOKIE_NAME)?.value
 		// console.log(token)
 		if (!token) {
 			const url = req.nextUrl.clone()
-			url.pathname = '/auth/login'
+			url.pathname = `/auth/login`
+			url.searchParams.set('redirectBack', toberedirect)
 			return NextResponse.redirect(url)
 		}
 			// Rolling session: refresh cookie max-age using same token value
@@ -27,5 +29,11 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/home/:path*']
+	matcher: [
+		'/home/:path*',
+		'/search/:path*',
+		'/DEV-labs/:path*',
+		'/notification/:path*',
+		'/profile/:path*'
+	]
 }
