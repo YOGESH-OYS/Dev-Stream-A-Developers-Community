@@ -5,7 +5,9 @@ import { COOKIE_NAME, SESSION_TTL_SECONDS } from './lib/auth'
 export function middleware(req: NextRequest) {
 	const { pathname } = req.nextUrl
 	const toberedirect = pathname
-	if (pathname.startsWith('/home') || pathname.startsWith('/DEV-labs') || pathname.startsWith('/search') || pathname.startsWith('/notification') || pathname.startsWith('/profile') ) {
+	const protectedRoutes = ['/home', '/search', '/DEV-labs', '/notification', '/profile'];
+	const isProtected = protectedRoutes.some(route => pathname.startsWith(route));
+	if (isProtected) {
 		const token = req.cookies.get(COOKIE_NAME)?.value
 		// console.log(token)
 		if (!token) {

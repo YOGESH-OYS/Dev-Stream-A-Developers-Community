@@ -13,7 +13,6 @@ import {
   Code,
   Clock
 } from 'lucide-react';
-import ScrollEffect from '@/app/components/ScroolEffect/scroll';
 
 interface Chat {
   id: string;

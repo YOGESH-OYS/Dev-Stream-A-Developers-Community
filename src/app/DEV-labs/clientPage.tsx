@@ -64,11 +64,13 @@ export default function DEVlabs({ userData } : DEVlabsPageProps ) {
           },
           body: JSON.stringify({data}),
         });
+        const result = await res.json();
+        sessionStorage.setItem('brainnerd_devlabs_id', result.testcase_id);
         setTimeout(() => {
           setIsLoading(false);
           // Redirect to learning session
-          window.location.href = `/DEV-labs/compiler?video=${encodeURIComponent(videoUrl)}`;
-        }, 50000);
+          window.location.href = `/DEV-labs/compiler?brainnerd_devlabs_=${result.testcase_id}`;
+        }, 20000);
       }
     }
     catch{

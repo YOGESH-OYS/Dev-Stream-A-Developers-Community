@@ -2,8 +2,10 @@ import mongoose , {Model,Document,Schema} from 'mongoose'
 import { Example, TestCase } from '@/app/DEV-labs/compiler/types'
 
 export interface TestCase_Model extends Document{
+  user_Id:string;
   title : string;
   question_id : string;
+  difficulty:string;
   question : string;
   examples : Example[];
   constraints :string[];
@@ -31,8 +33,10 @@ const testCaseSchema = new Schema<TestCase>({
 
 // Main schema combining everything
 const UserDataSchema = new Schema<TestCase_Model>({
+  user_Id:{type:String,required:true},
   title: {type:String , required:true},
   question_id: {type:String , required:true},
+  difficulty:{type:String,required:true},
   question: {type:String , required:true},
   examples: {type:[exampleSchema],required:true},
   constraints: {type:[String],required: true},
