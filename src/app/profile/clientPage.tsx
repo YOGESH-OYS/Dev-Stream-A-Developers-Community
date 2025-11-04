@@ -35,7 +35,9 @@ export default async function Profile({ userData } : ProfilePageProps){
 						{/* Identity */}
 						<div className="flex-1">
 							<div className="flex items-center gap-3">
-								<h1 className="text-3xl md:text-4xl font-extrabold">Irene Brooks</h1>
+								{userData && (
+									<h1 className="text-3xl md:text-4xl font-extrabold">{userData.firstName}</h1>
+								)}
 								<span className="px-2 py-1 rounded-md text-xs font-bold bg-gradient-to-r from-fuchsia-500 to-cyan-500 text-black">PRO</span>
 							</div>
 							<p className="mt-2 text-zinc-300">Interface and Brand Designer based in San Antonio</p>

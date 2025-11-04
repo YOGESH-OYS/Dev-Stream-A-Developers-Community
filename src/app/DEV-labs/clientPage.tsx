@@ -70,7 +70,7 @@ export default function DEVlabs({ userData } : DEVlabsPageProps ) {
           setIsLoading(false);
           // Redirect to learning session
           window.location.href = `/DEV-labs/compiler?brainnerd_devlabs_=${result.testcase_id}`;
-        }, 20000);
+        }, 7000);
       }
     }
     catch{

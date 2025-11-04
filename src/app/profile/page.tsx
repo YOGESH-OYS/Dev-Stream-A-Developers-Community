@@ -2,7 +2,6 @@ import { cookies } from 'next/headers'
 import { connectDB } from '../../lib/mongodb'
 import User from '../../models/User'
 import { verifySessionToken } from '../../lib/auth'
-import DEVlabs from './clientPage'
 import Profile from './clientPage'
 
 export default async function Dev_labs() {
@@ -18,6 +17,7 @@ export default async function Dev_labs() {
 			const payload = verifySessionToken(token)
 			if (payload) {
 				const user = await User.findById(payload.userId).select('-passwordHash')
+				console.log(user)
 				if (user) {
 					userData = {
 						username: user.username,

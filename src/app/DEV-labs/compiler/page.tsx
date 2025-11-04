@@ -14,9 +14,9 @@ export default async function CompilerPage({ searchParams }: any) {
   }
 
   try {
-    const testcase = await TCdata.findById(token);
+    const testcase = await TCdata.findById(token).lean();
     if (testcase) {
-      userData = {
+      userData = JSON.parse(JSON.stringify({
         user_Id: testcase.user_Id,
         title: testcase.title,
         question_id: testcase.question_id,
@@ -25,7 +25,7 @@ export default async function CompilerPage({ searchParams }: any) {
         examples: testcase.examples,
         constraints: testcase.constraints,
         testcases: testcase.testcases,
-      };
+      }));
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -34,7 +34,7 @@ export default async function CompilerPage({ searchParams }: any) {
   return (
     <div className="min-h-screen bg-background">
       <ScrollEffect />
-      <CompilerComponent />
+      <CompilerComponent testcaseData={userData} />
     </div>
   );
 }

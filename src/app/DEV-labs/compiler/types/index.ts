@@ -7,6 +7,7 @@ export interface CompilerComponentProps {
   initialLanguage?: string;
   className?: string;
   userId?: string;
+  testcaseData ?: TestCase_Model | null
 }
 
 export interface QuestionData {
@@ -131,4 +132,15 @@ export interface RequestBody {
   enable_per_process_and_thread_memory_limit: boolean | null;
   max_file_size: number | null;
   enable_network: boolean | null;
+}
+
+interface TestCase_Model{
+  user_Id:string;
+  title : string;
+  question_id : string;
+  difficulty:string;
+  question : string;
+  examples : Example[];
+  constraints :string[];
+  testcases :TestCase[];
 }
