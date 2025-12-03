@@ -9,10 +9,7 @@ import { RevealConfirmationModal } from './components/RevealConfirmationModal';
 import { useTestCases } from './hooks/useTestCases';
 import { useToast } from './hooks/use-toast';
 
-
-// Mock question data for development
-
-export default function CompilerComponent({ questionData,onSubmit,onPointDeduction,className = '',userId = 'guest',testcaseData}: CompilerComponentProps) {
+export default function CompilerComponent({onSubmit,onPointDeduction,className = '',userId = 'guest',testcaseData}: CompilerComponentProps) {
   console.log(testcaseData?.testcases)
   const [showHiddenTestCases, setShowHiddenTestCases] = useState(false);
   const [userPoints, setUserPoints] = useState(100);
@@ -41,32 +38,17 @@ export default function CompilerComponent({ questionData,onSubmit,onPointDeducti
       timeLimit: 1000,
       memoryLimit: 256
     },
-    testCases: {
-      revealed: [
-        {
-          id: '1',
-          questionId: 'two-sum',
-          input: '[2,7,11,15], 9',
-          expectedOutput: '[0,1]',
-          isHidden: false,
-          orderIndex: 1
-        },
-        {
-          id: '2',
-          questionId: 'two-sum',
-          input: '[3,2,4], 6',
-          expectedOutput: '[1,2]',
-          isHidden: false,
-          orderIndex: 2
-        }
-      ],
-      hidden: []
-    },
+    testCases: testcaseData?.testcases || [],
     starterCode:{}
   };
 
+  // const ai = ()=>{
+  //   const va = currentQuestionData.testCases.revealed.map(v => v.isHidden)
+  //   // console.log(va)
+  // }
+
   const handleSubmitComplete = (results: { results: TestCaseResult[] }) => {
-    if (results.results && results.results.length > 0) {
+    if (results.results && results.results.length > 0) {  
       // Filter hidden test case results
       const hiddenResults = results.results.filter(result => result.isHidden);
       setHiddenTestCases(hiddenResults);
@@ -159,7 +141,7 @@ export default function CompilerComponent({ questionData,onSubmit,onPointDeducti
       {currentQuestionData && (
         <TestCaseManager
           questionId={currentQuestionData.question.id}
-          revealedTestCases={currentQuestionData.testCases.revealed}
+          revealedTestCases={currentQuestionData.testCases.filter(reveal => !reveal.isHidden)}
           hiddenTestCases={hiddenTestCases}
           userId={userId}
           userPoints={userPoints}

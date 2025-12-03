@@ -1,7 +1,6 @@
 console.log("IN types")
 
 export interface CompilerComponentProps {
-  questionData?: QuestionData;
   onSubmit?: (results: TestResults) => void;
   onPointDeduction?: (points: number) => void;
   initialLanguage?: string;
@@ -12,7 +11,7 @@ export interface CompilerComponentProps {
 
 export interface QuestionData {
   question: Question;
-  testCases: TestCases;
+  testCases: TestCase[];
   starterCode: Record<string, string>;
 }
 
@@ -144,3 +143,5 @@ interface TestCase_Model{
   constraints :string[];
   testcases :TestCase[];
 }
+
+// https://youtu.be/do3a2tmlabw?si=sOOW4z18QQI_9nIk

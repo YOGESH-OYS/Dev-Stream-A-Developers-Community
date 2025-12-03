@@ -10,6 +10,7 @@ export interface IUser extends Document {
 	github?: string
 	bio?: string
 	firstLoginAt?: Date
+	chats?:string[]
 	createdAt: Date
 	updatedAt: Date
 }
@@ -26,6 +27,7 @@ const userSchema = new Schema<IUser>({
 	github: { type: String },
 	bio: { type: String },
 	firstLoginAt: { type: Date, default: null },
+	chats :{type:[String], default:[]}
 }, { timestamps: true })
 
 const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', userSchema)
