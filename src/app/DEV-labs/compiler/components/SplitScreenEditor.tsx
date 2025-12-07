@@ -61,7 +61,7 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
     // const code = starterCode[currentLanguage] || defaultStarterCode[currentLanguage];
     const code = defaultStarterCode[currentLanguage];
     setCode(code);
-  }, [currentLanguage, defaultStarterCode]);
+  }, [currentLanguage]);
 
   // Handle language change
   const handleLanguageChange = (language: string) => {
@@ -323,6 +323,25 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border">
+          <Button
+            onClick={handleRunCode}
+            disabled={isRunning || isSubmitting}
+            className="btn-primary flex-1 px-6 py-3 text-base font-semibold"
+            data-testid="run-code-button"
+          >
+            {isRunning ? (
+              <>
+                <div className="spinner mr-2" />
+                <span>Compiling...</span>
+              </>
+            ) : (
+              <>
+                <Play className="h-4 w-4 mr-2" />
+                <span>Compile Code</span>
+              </>
+            )}
+          </Button>
+          
           <Button
             onClick={handleRunCode}
             disabled={isRunning || isSubmitting}
