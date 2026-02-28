@@ -84,6 +84,8 @@ export class CodeRunner {
 
   static getStatusColor(status: string): string {
     switch (status) {
+      case 'success':
+        return 'text-green-400';
       case 'passed':
         return 'text-green-400';
       case 'failed':

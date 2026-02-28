@@ -55,9 +55,12 @@ export function QuestionDisplay({ question }: QuestionDisplayProps) {
         {/* Problem Description */}
         <div className="space-y-4">
           <div className="prose prose-invert max-w-none">
-            <p className="text-lg leading-relaxed text-foreground" data-testid="question-description">
+            <div 
+              className="text-lg leading-relaxed text-foreground whitespace-pre-line"
+              data-testid="question-description"
+            >
               {question.description}
-            </p>
+            </div>
           </div>
         </div>
 

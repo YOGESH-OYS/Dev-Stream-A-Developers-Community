@@ -1,3 +1,4 @@
+import { error } from 'console';
 import { TestCase, TestCaseResult, Language } from '../../DEV-labs/compiler/types/index';
 
 
@@ -22,35 +23,68 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
 
   // Mock response based on the endpoint
   if (url.includes('/api/run-code')) {
-    console.log(data.questionId)
-    const mockResults: TestCaseResult[] = [
-      {
-        testCaseId: '1',
-        status: 'passed',
-        actualOutput: '[0,1]',
-        executionTime: Math.floor(Math.random() * 3) + 1,
-        memoryUsed: 14 + Math.random() * 0.5,
-        isHidden: false,
-      },
-      {
-        testCaseId: '2',
-        status: 'passed',
-        actualOutput: '[1,2]',
-        executionTime: Math.floor(Math.random() * 3) + 1,
-        memoryUsed: 14 + Math.random() * 0.5,
-        isHidden: false,
-      },
-    ];
+    try {
+      // data already contains the request body
+      const language_id = 62;
+      const source_code = data.code;
+
+      console.log(source_code);
+      
+      // 1. Submit code to Judge0
+      const submitRes = await fetch("http://13.233.229.250:2358/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          language_id,
+          source_code,
+          stdin: "Judge0\nverti",
+          expected_output: null
+        }),
+      });
+
+      console.log(submitRes);
+      
+      const submitData = await submitRes.json();
+      const token = submitData.token;
+  
+      console.log(token);
+      // 2. Poll for result
+      let result = null;
+  
+      while (true) {
+        const checkRes = await fetch(
+          `http://13.233.229.250:2358/submissions/${token}`
+        );
+
+        const checkData = await checkRes.json();
+        console.log(checkData);
+  
+        if (checkData.status && checkData.status.id >= 3) {
+          result = checkData;
+          break;
+        }
+  
+        await new Promise((r) => setTimeout(r, 300));
+      }
+
+      console.log("result",result);
+
+      return new Response(JSON.stringify({
+        status: 'success',
+        results: result.stdout ?? '',
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+  
+    } catch (err) {
+      return new Response(
+        JSON.stringify({ error: "Error in running code" }),
+        { status: 500 }
+      );
+    }
+
     
-    return new Response(JSON.stringify({
-      status: 'success',
-      results: mockResults,
-      totalPassed: mockResults.length,
-      totalTests: mockResults.length,
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
   }
   
 

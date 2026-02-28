@@ -10,7 +10,6 @@ import { useTestCases } from './hooks/useTestCases';
 import { useToast } from './hooks/use-toast';
 
 export default function CompilerComponent({onSubmit,onPointDeduction,className = '',userId = 'guest',testcaseData}: CompilerComponentProps) {
-  console.log(testcaseData?.testcases)
   const [showHiddenTestCases, setShowHiddenTestCases] = useState(false);
   const [userPoints, setUserPoints] = useState(100);
   const [isModalOpen, setIsModalOpen] = useState(false);

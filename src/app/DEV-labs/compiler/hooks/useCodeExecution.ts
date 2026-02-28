@@ -66,8 +66,8 @@ export function useCodeExecution(): UseCodeExecutionReturn {
       const response = await CodeRunner.runCode(request);
       const passedCount = response.totalPassed;
       const totalCount = response.totalTests;
-      const maxTime = Math.max(...response.results.map(r => r.executionTime || 0));
-      const maxMemory = Math.max(...response.results.map(r => r.memoryUsed || 0));
+      const maxTime = 0;
+      const maxMemory = 0;
 
       setExecutionStats({
         executionTime: CodeRunner.formatExecutionTime(maxTime),
@@ -81,24 +81,11 @@ export function useCodeExecution(): UseCodeExecutionReturn {
             <i class="fas fa-check-circle"></i>
             <span>Compilation successful</span>
           </div>
-          <div class="text-sm text-muted-foreground">
-            Running ${totalCount} test cases...
-          </div>
           <div class="space-y-2">
-            ${response.results.map((result, index) => `
-              <div class="flex justify-between">
-                <span>Test Case ${index + 1}: </span>
-                <span class="${CodeRunner.getStatusColor(result.status)}">
-                  ${CodeRunner.getStatusIcon(result.status)} ${result.status === 'passed' ? 'Passed' : 'Failed'} (${CodeRunner.formatExecutionTime(result.executionTime)})
-                </span>
-              </div>
-            `).join('')}
-          </div>
-          <div class="border-t border-border pt-3">
-            <div class="${passedCount === totalCount ? 'text-green-400' : 'text-yellow-400'} font-semibold">
-              ${passedCount === totalCount ? 'All sample test cases passed!' : `Results: ${passedCount}/${totalCount} test cases passed`}
-              <br />
-              ${output}
+            <div class="flex justify-between">
+            <pre class="text-sm text-white">${response.results}</pre>
+            <span class="${CodeRunner.getStatusColor(response.status)}">
+            </span>
             </div>
           </div>
         </div>
