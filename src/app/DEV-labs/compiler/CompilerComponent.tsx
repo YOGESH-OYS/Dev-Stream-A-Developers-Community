@@ -133,6 +133,7 @@ export default function CompilerComponent({ onSubmit, onPointDeduction, classNam
           starterCode={currentQuestionData.starterCode}
           userId={userId}
           testcaseId={testcaseId}
+          testcases={currentQuestionData.testCases}
           onSubmitComplete={handleSubmitComplete}
         />
       )}

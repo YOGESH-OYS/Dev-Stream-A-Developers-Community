@@ -6,34 +6,17 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // Mock response based on the endpoint
-  if (url.includes('/api/run-code')) {
+
+  if (url.includes('/api/compile-code')) {
     try {
       // data: { questionId, language, code, userId?, stdin? }
       const language_id = 62;
       const source_code = data.code;
       const stdin = typeof data.stdin === 'string' ? data.stdin : '';
 
-      console.log("source_code",stdin);
-      console.log("expected_output",process.env.JUDGE0_REQ_URL);
-      console.log("language_id",process.env.MONGODB_URI);
-
       // 1. Submit code to Judge0 (user's code + user's custom input)
-      const submitRes = await fetch(process.env.JUDGE0_REQ_URL as String + "/submissions", {
+      const submitRes = await fetch("http://52.66.201.197:2358/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -43,23 +26,19 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
           expected_output: null
         }),
       });
-
-      console.log(submitRes);
       
       const submitData = await submitRes.json();
       const token = submitData.token;
-  
-      console.log(token);
+
       // 2. Poll for result
       let result = null;
   
       while (true) {
         const checkRes = await fetch(
-          process.env.JUDGE0_REQ_URL as String + `/submissions/${token}`
+          `http://52.66.201.197:2358/submissions/${token}`
         );
 
         const checkData = await checkRes.json();
-        console.log(checkData);
   
         if (checkData.status && checkData.status.id >= 3) {
           result = checkData;
@@ -69,7 +48,71 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
         await new Promise((r) => setTimeout(r, 300));
       }
 
-      console.log("result",result);
+      if(result.stdout != null){
+        return new Response(JSON.stringify({
+          status: 'success',
+          results: result ?? '',
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }else{
+        return new Response(JSON.stringify({
+          status: 'failed',
+          results: result ?? '',
+        }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }); 
+      }
+  
+    } catch (err) {
+      return new Response(
+        JSON.stringify({ error: "Error in running code" }),
+        { status: 500 }
+      );
+    } 
+  }
+
+  if (url.includes('/api/run-code')) {
+    try {
+      // data: { questionId, language, code, userId?, stdin? }
+      const language_id = 62;
+      const source_code = data.code;
+      const stdin = typeof data.stdin === 'string' ? data.stdin : '';
+
+      // 1. Submit code to Judge0 (user's code + user's custom input)
+      const submitRes = await fetch("http://52.66.201.197:2358/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          language_id,
+          source_code,
+          stdin: stdin,
+          expected_output: null
+        }),
+      });
+      
+      const submitData = await submitRes.json();
+      const token = submitData.token;
+
+      // 2. Poll for result
+      let result = null;
+  
+      while (true) {
+        const checkRes = await fetch(
+          `http://52.66.201.197:2358/submissions/${token}`
+        );
+
+        const checkData = await checkRes.json();
+  
+        if (checkData.status && checkData.status.id >= 3) {
+          result = checkData;
+          break;
+        }
+  
+        await new Promise((r) => setTimeout(r, 300));
+      }
 
       return new Response(JSON.stringify({
         status: 'success',
@@ -85,24 +128,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
         { status: 500 }
       );
     }
-
-    
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   if (url.includes('/api/submit')) {
     // data: { questionId, language, code, userId?, testcaseId? }

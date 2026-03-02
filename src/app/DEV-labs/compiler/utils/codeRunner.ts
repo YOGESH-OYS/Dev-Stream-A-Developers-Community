@@ -12,7 +12,7 @@ export interface ProcessUrlResponse {
   url: string;
 }
 
-export interface RunCodeRequest {
+export interface CodeRequest {
   questionId: string;
   language: Language;
   code: string;
@@ -37,6 +37,27 @@ export interface RunCodeResponse {
   totalTests: number;
 }
 
+export interface JudgeStatus {
+  id: number;
+  description: string;
+}
+
+export interface Judge0Result {
+  compile_output: string | null;
+  memory: string;
+  message: string | null;
+  status: JudgeStatus;
+  stderr: string | null;
+  stdout: string | null;
+  time: string;
+  token: string;
+}
+
+export interface CompileCodeResponse {
+  status: string;
+  results: Judge0Result;
+}
+
 export interface SubmitCodeResponse {
   submissionId: string;
   status: string;
@@ -47,8 +68,13 @@ export interface SubmitCodeResponse {
 
 export class CodeRunner {
 
-  static async runCode(request: RunCodeRequest): Promise<RunCodeResponse> {
+  static async runCode(request: CodeRequest): Promise<RunCodeResponse> {
     const response = await mockApiRequest('POST', '/api/run-code', request);
+    return await response.json();
+  }
+
+  static async compileCode(request: CodeRequest): Promise<CompileCodeResponse> {
+    const response = await mockApiRequest('POST', '/api/compile-code', request);
     return await response.json();
   }
 

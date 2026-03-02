@@ -1,14 +1,16 @@
 import { useState,useEffect, useCallback } from 'react';
 import { Language, TestCaseResult, ExecutionStats } from '../types';
-import { CodeRunner, RunCodeRequest } from '../utils/codeRunner';
+import { CodeRunner, CodeRequest } from '../utils/codeRunner';
 
 interface UseCodeExecutionReturn {
   setOutput: React.Dispatch<React.SetStateAction<string>>;
   isRunning: boolean;
+  isCompiling : boolean;
   isSubmitting: boolean;
   executionStats: ExecutionStats;
   consoleOutput: string;
   runCode: (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => Promise<void>;
+  compileCode: (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => Promise<void>;
   submitCode: (questionId: string, language: Language, code: string, userId?: string, testcaseId?: string) => Promise<TestCaseResult[]>;
   clearOutput: () => void;
   setConsoleOutput: (output: string) => void;
@@ -25,6 +27,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
   }, [output]);
 
   const [isRunning, setIsRunning] = useState(false);
+  const [isCompiling, setCompiling] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [executionStats, setExecutionStats] = useState<ExecutionStats>(
     {
@@ -44,7 +47,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
   `);
 
   const runCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => {
-    if (isRunning || isSubmitting) return;
+    if (isRunning || isSubmitting || isCompiling) return;
 
     setIsRunning(true);
     setExecutionStats(prev => ({ ...prev, executionStatus: 'Running...' }));
@@ -56,7 +59,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     `);
 
     try {
-      const request: RunCodeRequest = {
+      const request: CodeRequest = {
         questionId,
         language,
         code,
@@ -110,7 +113,79 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     finally {
       setIsRunning(false);
     }
-  }, [isRunning, isSubmitting]);
+  }, [isRunning, isSubmitting, isCompiling]);
+
+  const compileCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => {
+    if (isRunning || isSubmitting || isCompiling) return;
+
+    setCompiling(true);
+    setExecutionStats(prev => ({ ...prev, executionStatus: 'Compiling...' }));
+    setConsoleOutput(`
+      <div class="flex items-center gap-2 text-primary">
+        <div class="spinner"></div>
+        <span>Compiling your ${language} solution...</span>
+      </div>
+    `);
+
+    try {
+      const request: CodeRequest = {
+        questionId,
+        language,
+        code,
+        userId,
+        stdin: customInput ?? '',
+      };
+
+      const response = await CodeRunner.compileCode(request);
+      const maxTime = response.results.time;
+      const maxMemory = response.results.memory;
+
+      setExecutionStats({
+        executionTime: maxTime,
+        memoryUsage: maxMemory,
+        executionStatus: response.status,
+      });
+
+      const outputHtml = `
+        <div class="space-y-3">
+          <div class="flex items-center gap-2 ${CodeRunner.getStatusColor(response.status)}">
+            <i class="fas fa-check-circle"></i>
+            <span>Compilation successful</span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+            <pre class="text-sm text-white">${response.results.stdout ?? ""}</pre>
+            </div>
+          </div>
+          <div class="space-y-2">
+              <div class="flex justify-between">
+                  <pre class="text-sm ${CodeRunner.getStatusColor(response.status)}">
+                    ${response.results.stderr ?? ""}
+                  </pre>
+              </div>
+          </div>
+        </div>
+      `;
+
+      setConsoleOutput(outputHtml);
+    } 
+    catch (error) {
+      console.error('Code execution failed:', error);
+      setExecutionStats(prev => ({ ...prev, executionStatus: 'Error' }));
+      setConsoleOutput(`
+        <div class="flex items-center gap-2 text-red-400">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Execution failed</span>
+        </div>
+        <div class="text-sm text-muted-foreground mt-2">
+          ${error instanceof Error ? error.message : 'Unknown error occurred'}
+        </div>
+      `);
+    } 
+    finally {
+      setCompiling(false);
+    }
+  }, [isRunning, isSubmitting, isCompiling]);
 
   const submitCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, testcaseId?: string): Promise<TestCaseResult[]> => {
     if (isRunning || isSubmitting) return [];
@@ -197,7 +272,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     } finally {
       setIsSubmitting(false);
     }
-  }, [isRunning, isSubmitting]);
+  }, [isRunning, isSubmitting, isCompiling]);
 
   const clearOutput = useCallback(() => {
     setConsoleOutput(`
@@ -217,9 +292,11 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     isRunning,
     setOutput,
     isSubmitting,
+    isCompiling,
     executionStats,
     consoleOutput,
     runCode,
+    compileCode,
     submitCode,
     clearOutput,
     setConsoleOutput,
