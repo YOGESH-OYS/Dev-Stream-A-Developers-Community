@@ -3,6 +3,8 @@ import { mockApiRequest } from '@/app/api/compiler/route';
 
 export interface ProcessUrl{
   url: string;
+  api_key: string;
+  api_model: string;
 }
 
 export interface ProcessUrlResponse {
@@ -15,6 +17,17 @@ export interface RunCodeRequest {
   language: Language;
   code: string;
   userId?: string;
+  /** stdin for Run Code (user's custom input) */
+  stdin?: string;
+}
+
+export interface SubmitCodeRequest {
+  questionId: string;
+  language: Language;
+  code: string;
+  userId?: string;
+  /** Mongo _id of testcase document; API loads testcase inputs from DB */
+  testcaseId?: string;
 }
 
 export interface RunCodeResponse {
@@ -40,8 +53,7 @@ export class CodeRunner {
   }
 
   static async processUrl(request: ProcessUrl): Promise<Response> {
-    console.log(request.url);
-    const response = await fetch('http://localhost:5678/webhook/1ea07b22-946c-411c-9685-2587bb7c9199', {
+    const response = await fetch(process.env.WEBHOOK_URL as string, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +64,7 @@ export class CodeRunner {
     return response;
   }
 
-  static async submitCode(request: RunCodeRequest): Promise<SubmitCodeResponse> {
+  static async submitCode(request: SubmitCodeRequest): Promise<SubmitCodeResponse> {
     const response = await mockApiRequest('POST', '/api/submit', request);
     return await response.json();
   }

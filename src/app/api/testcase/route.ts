@@ -28,6 +28,7 @@ export const UserDataSchema = z.object({
   title: z.string(),
   question_id: z.string(),
   difficulty:z.string(),
+  cognitive_mode:z.array(z.string()),
   question: z.string(),
   examples: z.array(exampleSchema),
   constraints: z.array(z.string()),
@@ -37,7 +38,6 @@ export const UserDataSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    console.log("IN ROUTE.ts");
     const body = await request.json();
     const validatedData = UserDataSchema.parse(body.data);
 
@@ -76,6 +76,7 @@ export async function POST(request: Request) {
       user_Id: userData.username,
       ...validatedData
     });
+
     const chatId = String(testcase._id);
 
     // 2️⃣ add the chat id (string) at the top of chats array
@@ -110,27 +111,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
-
-
-
-// testCases: {
-//   revealed: [
-//     {
-//       id: '1',
-//       questionId: 'two-sum',
-//       input: '[2,7,11,15], 9',
-//       expectedOutput: '[0,1]',
-//       isHidden: false,
-//       orderIndex: 1
-//     },
-//     {
-//       id: '2',
-//       questionId: 'two-sum',
-//       input: '[3,2,4], 6',
-//       expectedOutput: '[1,2]',
-//       isHidden: false,
-//       orderIndex: 2
-//     }
-//   ],
-//   hidden: []
-// },

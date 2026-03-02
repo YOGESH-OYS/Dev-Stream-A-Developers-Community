@@ -22,15 +22,19 @@ interface SplitScreenEditorProps {
   questionId: string;
   starterCode: Record<string, string>;
   userId?: string;
+  /** Mongo _id of the testcase document; used by Submit to load testcase inputs from DB */
+  testcaseId?: string;
   onRunComplete?: (results: any) => void;
   onSubmitComplete?: (results: any) => void;
 }
 
-export function SplitScreenEditor({ questionId, starterCode, userId, onRunComplete, onSubmitComplete }: SplitScreenEditorProps) {
+export function SplitScreenEditor({ questionId, starterCode, userId, testcaseId, onRunComplete, onSubmitComplete }: SplitScreenEditorProps) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>('java');
   const [leftPaneWidth, setLeftPaneWidth] = useState(50);
   const [isResizing, setIsResizing] = useState(false);
   const [code, setCode] = useState('');
+  /** User-provided stdin for Run Code only (my code + my input) */
+  const [customInput, setCustomInput] = useState('');
   const [fontSize, setFontSize] = useState(14);
   
   const splitContainerRef = useRef<HTMLDivElement>(null);
@@ -118,16 +122,24 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
 
 
 
-  // IMPORTANT
+  // Run Code: my code + my input (custom input box)
   const handleRunCode = async () => {
-    await runCode(questionId, currentLanguage, code, userId);
+    await runCode(questionId, currentLanguage, code, userId, customInput);
     if (onRunComplete) {
       onRunComplete({ language: currentLanguage, code });
     }
   };
 
+  const handleCompileCode = async () => {
+    await runCode(questionId, currentLanguage, code, userId, customInput);
+    if (onRunComplete) {
+      onRunComplete({ language: currentLanguage, code });
+    }
+  };
+
+  // Submit: my code + testcase inputs from DB (testcaseId used by API to load testcases)
   const handleSubmit = async () => {
-    const results = await submitCode(questionId, currentLanguage, code, userId);
+    const results = await submitCode(questionId, currentLanguage, code, userId, testcaseId);
     if (onSubmitComplete) {
       onSubmitComplete({ language: currentLanguage, code, results });
     }
@@ -254,6 +266,23 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
                   }}
                 />
               </div>
+              {/* Custom input for Run Code only: my code + my input */}
+              <div className="space-y-2 pt-3 border-t border-border">
+                <h3 className="font-medium text-foreground text-sm flex items-center gap-2">
+                  <i className="fas fa-keyboard text-muted-foreground" />
+                  Custom input
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Used when you click &quot;Compile Code&quot;. Leave empty if your program doesn&apos;t read stdin.
+                </p>
+                <textarea
+                  value={customInput}
+                  onChange={(e) => setCustomInput(e.target.value)}
+                  placeholder="e.g. 5 10&#10;hello"
+                  className="w-full min-h-[80px] px-3 py-2 rounded-md bg-muted/50 border border-border text-foreground font-mono text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-y"
+                  data-testid="custom-input"
+                />
+              </div>
             </div>
           </div>
 
@@ -328,11 +357,12 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
             disabled={isRunning || isSubmitting}
             className="btn-primary flex-1 px-6 py-3 text-base font-semibold"
             data-testid="run-code-button"
+            title="Run with the custom input above (my code + my input)"
           >
             {isRunning ? (
               <>
                 <div className="spinner mr-2" />
-                <span>Compiling...</span>
+                <span>Compile On Progress...</span>
               </>
             ) : (
               <>
@@ -341,12 +371,12 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
               </>
             )}
           </Button>
-          
           <Button
             onClick={handleRunCode}
             disabled={isRunning || isSubmitting}
             className="btn-primary flex-1 px-6 py-3 text-base font-semibold"
             data-testid="run-code-button"
+            title="Run with the custom input above (my code + my input)"
           >
             {isRunning ? (
               <>
@@ -360,12 +390,12 @@ export function SplitScreenEditor({ questionId, starterCode, userId, onRunComple
               </>
             )}
           </Button>
-          
           <Button
             onClick={handleSubmit}
             disabled={isRunning || isSubmitting}
             className="btn-secondary flex-1 px-6 py-3 text-base font-semibold"
             data-testid="submit-button"
+            title="Submit against all test cases from the problem (inputs from DB)"
           >
             {isSubmitting ? (
               <>

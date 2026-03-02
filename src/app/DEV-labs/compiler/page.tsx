@@ -34,7 +34,7 @@ export default async function CompilerPage({ searchParams }: any) {
   return (
     <div className="min-h-screen bg-background">
       <ScrollEffect />
-      <CompilerComponent testcaseData={userData} />
+      <CompilerComponent testcaseData={userData} testcaseId={token} />
     </div>
   );
 }

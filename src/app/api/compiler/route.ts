@@ -1,5 +1,4 @@
-import { error } from 'console';
-import { TestCase, TestCaseResult, Language } from '../../DEV-labs/compiler/types/index';
+import { TestCaseResult } from '../../DEV-labs/compiler/types/index';
 
 
 // Mock API request function for development
@@ -24,20 +23,23 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
   // Mock response based on the endpoint
   if (url.includes('/api/run-code')) {
     try {
-      // data already contains the request body
+      // data: { questionId, language, code, userId?, stdin? }
       const language_id = 62;
       const source_code = data.code;
+      const stdin = typeof data.stdin === 'string' ? data.stdin : '';
 
-      console.log(source_code);
-      
-      // 1. Submit code to Judge0
-      const submitRes = await fetch("http://13.233.229.250:2358/submissions", {
+      console.log("source_code",stdin);
+      console.log("expected_output",process.env.JUDGE0_REQ_URL);
+      console.log("language_id",process.env.MONGODB_URI);
+
+      // 1. Submit code to Judge0 (user's code + user's custom input)
+      const submitRes = await fetch(process.env.JUDGE0_REQ_URL as String + "/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           language_id,
           source_code,
-          stdin: "Judge0\nverti",
+          stdin: stdin,
           expected_output: null
         }),
       });
@@ -53,7 +55,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
   
       while (true) {
         const checkRes = await fetch(
-          `http://13.233.229.250:2358/submissions/${token}`
+          process.env.JUDGE0_REQ_URL as String + `/submissions/${token}`
         );
 
         const checkData = await checkRes.json();
@@ -103,47 +105,85 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
 
 
   if (url.includes('/api/submit')) {
-    const mockResults: TestCaseResult[] = [
-      {
-        testCaseId: '1',
-        status: 'passed',
-        actualOutput: '[0,1]',
-        executionTime: Math.floor(Math.random() * 3) + 1,
-        memoryUsed: 14 + Math.random() * 0.5,
-        isHidden: false,
-      },
-      {
-        testCaseId: '2',
-        status: 'passed',
-        actualOutput: '[1,2]',
-        executionTime: Math.floor(Math.random() * 3) + 1,
-        memoryUsed: 14 + Math.random() * 0.5,
-        isHidden: false,
-      },
-      {
-        testCaseId: '3',
-        status: Math.random() > 0.3 ? 'passed' : 'failed',
-        actualOutput: Math.random() > 0.3 ? '[2,3]' : '[1,3]',
-        executionTime: Math.floor(Math.random() * 5) + 1,
-        memoryUsed: 14 + Math.random() * 1,
-        isHidden: true,
-      },
-      {
-        testCaseId: '4',
-        status: Math.random() > 0.2 ? 'passed' : 'failed',
-        actualOutput: Math.random() > 0.2 ? '[0,4]' : '[1,4]',
-        executionTime: Math.floor(Math.random() * 5) + 1,
-        memoryUsed: 14 + Math.random() * 1,
-        isHidden: true,
-      },
-    ];
-    
+    // data: { questionId, language, code, userId?, testcaseId? }
+    const testcaseId = data?.testcaseId;
+    if (!testcaseId) {
+      return new Response(JSON.stringify({ error: 'testcaseId required for submit' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const TCdata = (await import('@/models/Testcasemodel')).default;
+    const testcaseDoc = await TCdata.findById(testcaseId).lean();
+    if (!testcaseDoc || !testcaseDoc.testcases?.length) {
+      return new Response(JSON.stringify({ error: 'Testcase not found or no test cases' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const language_id = 62;
+    const source_code = data.code;
+    const JUDGE_BASE = 'http://13.233.229.250:2358';
+
+    const results: TestCaseResult[] = [];
+    for (let i = 0; i < testcaseDoc.testcases.length; i++) {
+      const tc = testcaseDoc.testcases[i];
+      try {
+        const submitRes = await fetch(`${JUDGE_BASE}/submissions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            language_id,
+            source_code,
+            stdin: tc.input ?? '',
+            expected_output: tc.expectedOutput ?? null,
+          }),
+        });
+        const submitData = await submitRes.json();
+        const token = submitData.token;
+
+        let result: { stdout?: string; stderr?: string; status?: { id: number } } | null = null;
+        while (true) {
+          const checkRes = await fetch(`${JUDGE_BASE}/submissions/${token}`);
+          const checkData = await checkRes.json();
+          if (checkData.status && checkData.status.id >= 3) {
+            result = checkData;
+            break;
+          }
+          await new Promise((r) => setTimeout(r, 300));
+        }
+
+        const statusId = result?.status?.id ?? 6;
+        const passed = statusId === 3;
+        const actualOutput = result?.stdout ?? result?.stderr ?? '';
+        results.push({
+          testCaseId: tc.id ?? String(i + 1),
+          status: passed ? 'passed' : 'failed',
+          actualOutput: actualOutput.trim().slice(0, 200),
+          executionTime: 0,
+          memoryUsed: 0,
+          isHidden: tc.isHidden ?? false,
+        });
+      } catch (err) {
+        results.push({
+          testCaseId: tc.id ?? String(i + 1),
+          status: 'error',
+          actualOutput: undefined,
+          errorMessage: err instanceof Error ? err.message : 'Execution error',
+          isHidden: tc.isHidden ?? false,
+        });
+      }
+    }
+
+    const passedTestCases = results.filter((r) => r.status === 'passed').length;
     return new Response(JSON.stringify({
       submissionId: `sub_${Date.now()}`,
       status: 'completed',
-      passedTestCases: mockResults.filter(r => r.status === 'passed').length,
-      totalTestCases: mockResults.length,
-      results: mockResults,
+      passedTestCases,
+      totalTestCases: results.length,
+      results,
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

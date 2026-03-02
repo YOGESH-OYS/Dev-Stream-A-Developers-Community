@@ -9,7 +9,7 @@ import { RevealConfirmationModal } from './components/RevealConfirmationModal';
 import { useTestCases } from './hooks/useTestCases';
 import { useToast } from './hooks/use-toast';
 
-export default function CompilerComponent({onSubmit,onPointDeduction,className = '',userId = 'guest',testcaseData}: CompilerComponentProps) {
+export default function CompilerComponent({ onSubmit, onPointDeduction, className = '', userId = 'guest', testcaseData, testcaseId }: CompilerComponentProps) {
   const [showHiddenTestCases, setShowHiddenTestCases] = useState(false);
   const [userPoints, setUserPoints] = useState(100);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,6 +132,7 @@ export default function CompilerComponent({onSubmit,onPointDeduction,className =
           questionId={currentQuestionData.question.id}
           starterCode={currentQuestionData.starterCode}
           userId={userId}
+          testcaseId={testcaseId}
           onSubmitComplete={handleSubmitComplete}
         />
       )}

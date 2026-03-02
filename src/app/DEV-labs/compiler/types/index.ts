@@ -6,7 +6,9 @@ export interface CompilerComponentProps {
   initialLanguage?: string;
   className?: string;
   userId?: string;
-  testcaseData ?: TestCase_Model | null
+  testcaseData?: TestCase_Model | null;
+  /** Mongo _id of the testcase document; used by Submit to load testcase inputs from DB */
+  testcaseId?: string;
 }
 
 export interface QuestionData {

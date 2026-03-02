@@ -37,6 +37,23 @@ export default function Page() {
 		return (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
 				<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
+					<Link href="/" scroll={true} className="flex items-center gap-2 group">
+						<div>
+							<img
+								src="/favicon.ico"
+								alt="Logo"
+								className="w-8 h-8 object-contain"
+							/>
+						</div>
+
+						<span className="text font-bold tracking-tight text-white/90 drop-shadow-md group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-fuchsia-400 group-hover:to-cyan-400 transition-all">
+							Dev Stream
+							<p className="text-gray-500 text-sm font-medium">
+								A Developer Community
+							</p>
+						</span>
+					</Link>
+					<div className="h-6 w-px bg-white/20 mx-2" />
 					<Link href="#features"
 						className="
 							relative text-sm font-medium text-zinc-300 transition duration-300 hover:text-transparent hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-cyan-500 hover:bg-clip-text

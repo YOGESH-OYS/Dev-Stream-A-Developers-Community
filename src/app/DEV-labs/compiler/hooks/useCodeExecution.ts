@@ -8,8 +8,8 @@ interface UseCodeExecutionReturn {
   isSubmitting: boolean;
   executionStats: ExecutionStats;
   consoleOutput: string;
-  runCode: (questionId: string, language: Language, code: string, userId?: string) => Promise<void>;
-  submitCode: (questionId: string, language: Language, code: string, userId?: string) => Promise<TestCaseResult[]>;
+  runCode: (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => Promise<void>;
+  submitCode: (questionId: string, language: Language, code: string, userId?: string, testcaseId?: string) => Promise<TestCaseResult[]>;
   clearOutput: () => void;
   setConsoleOutput: (output: string) => void;
 }
@@ -43,7 +43,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     </div>
   `);
 
-  const runCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string) => {
+  const runCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => {
     if (isRunning || isSubmitting) return;
 
     setIsRunning(true);
@@ -61,6 +61,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
         language,
         code,
         userId,
+        stdin: customInput ?? '',
       };
 
       const response = await CodeRunner.runCode(request);
@@ -111,7 +112,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     }
   }, [isRunning, isSubmitting]);
 
-  const submitCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string): Promise<TestCaseResult[]> => {
+  const submitCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, testcaseId?: string): Promise<TestCaseResult[]> => {
     if (isRunning || isSubmitting) return [];
 
     setIsSubmitting(true);
@@ -124,14 +125,13 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     `);
 
     try {
-      const request: RunCodeRequest = {
+      const response = await CodeRunner.submitCode({
         questionId,
         language,
         code,
         userId,
-      };
-
-      const response = await CodeRunner.submitCode(request);
+        testcaseId,
+      });
       
       const passedCount = response.passedTestCases;
       const totalCount = response.totalTestCases;
