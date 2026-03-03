@@ -1,7 +1,5 @@
 'use client'
 
-export const dynamic = "force-dynamic";
-
 import Link from 'next/link'
 import ScrollEffect from '../../components/ScroolEffect/scroll'
 import { useState } from 'react'

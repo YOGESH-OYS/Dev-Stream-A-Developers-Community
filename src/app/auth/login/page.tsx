@@ -2,6 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
+import { Suspense } from "react";
 import Link from 'next/link'
 import ScrollEffect from '../../components/ScroolEffect/scroll'
 import { useState } from 'react'
@@ -40,7 +41,9 @@ export default function LoginPage() {
 					</div>
 
 					{/* Sign In Form */}
-					<SignInForm />
+					<Suspense fallback={null}>
+						<SignInForm />
+					</Suspense>
 
 					{/* Toggle to Register */}
 					<div className="mt-8 text-center">
