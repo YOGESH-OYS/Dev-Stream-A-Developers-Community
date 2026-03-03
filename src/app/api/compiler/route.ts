@@ -16,7 +16,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
       const stdin = typeof data.stdin === 'string' ? data.stdin : '';
 
       // 1. Submit code to Judge0 (user's code + user's custom input)
-      const submitRes = await fetch("http://52.66.201.197:2358/submissions", {
+      const submitRes = await fetch("http://3.111.144.140:2358/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -35,7 +35,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
   
       while (true) {
         const checkRes = await fetch(
-          `http://52.66.201.197:2358/submissions/${token}`
+          `http://3.111.144.140:2358/submissions/${token}`
         );
 
         const checkData = await checkRes.json();
@@ -82,7 +82,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
       const stdin = typeof data.stdin === 'string' ? data.stdin : '';
 
       // 1. Submit code to Judge0 (user's code + user's custom input)
-      const submitRes = await fetch("http://52.66.201.197:2358/submissions", {
+      const submitRes = await fetch("http://3.111.144.140:2358/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,7 +101,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
   
       while (true) {
         const checkRes = await fetch(
-          `http://52.66.201.197:2358/submissions/${token}`
+          `http://3.111.144.140:2358/submissions/${token}`
         );
 
         const checkData = await checkRes.json();
@@ -151,7 +151,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
 
     const language_id = 62;
     const source_code = data.code;
-    const JUDGE_BASE = 'http://13.233.229.250:2358';
+    const JUDGE_BASE = 'http://3.111.144.140:2358';
 
     const results: TestCaseResult[] = [];
     for (let i = 0; i < testcaseDoc.testcases.length; i++) {

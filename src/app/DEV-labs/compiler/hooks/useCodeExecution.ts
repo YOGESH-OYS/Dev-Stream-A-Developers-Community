@@ -9,7 +9,7 @@ interface UseCodeExecutionReturn {
   isSubmitting: boolean;
   executionStats: ExecutionStats;
   consoleOutput: string;
-  runCode: (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => Promise<void>;
+  runCode: (questionId: string, language: Language, code: string, userId?: string, Input?: string) => Promise<void>;
   compileCode: (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => Promise<void>;
   submitCode: (questionId: string, language: Language, code: string, userId?: string, testcaseId?: string) => Promise<TestCaseResult[]>;
   clearOutput: () => void;
@@ -46,7 +46,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     </div>
   `);
 
-  const runCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => {
+  const runCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, Input?: string) => {
     if (isRunning || isSubmitting || isCompiling) return;
 
     setIsRunning(true);
@@ -64,7 +64,7 @@ export function useCodeExecution(): UseCodeExecutionReturn {
         language,
         code,
         userId,
-        stdin: customInput ?? '',
+        stdin: Input ?? '',
       };
 
       const response = await CodeRunner.runCode(request);
