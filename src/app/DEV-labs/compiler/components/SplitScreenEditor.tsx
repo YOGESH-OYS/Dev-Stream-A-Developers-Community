@@ -118,16 +118,19 @@ export function SplitScreenEditor({ questionId, starterCode, userId, testcaseId,
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
 
-  // Run Code: my code + my input (custom input box)
   const handleRunCode = async () => {
     const visibleTestcases = testcases.filter(tc => !tc.isHidden);
 
-    for (const tc of visibleTestcases) {
-      console.log("-ji-",tc.input) // input from database 
-    }
-    await runCode(questionId, currentLanguage, code, userId, customInput);
+    const results = await runCode(
+      questionId,
+      currentLanguage,
+      code,
+      userId,
+      visibleTestcases,
+    );
+
     if (onRunComplete) {
-      onRunComplete({ language: currentLanguage, code });
+      onRunComplete({ language: currentLanguage, code, results });
     }
   };
 

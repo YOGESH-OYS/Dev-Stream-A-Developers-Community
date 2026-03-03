@@ -32,9 +32,7 @@ export interface SubmitCodeRequest {
 
 export interface RunCodeResponse {
   status: string;
-  results: TestCaseResult[];
-  totalPassed: number;
-  totalTests: number;
+  results: Judge0Result;
 }
 
 export interface JudgeStatus {

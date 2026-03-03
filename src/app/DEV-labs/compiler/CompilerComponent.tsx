@@ -14,6 +14,7 @@ export default function CompilerComponent({ onSubmit, onPointDeduction, classNam
   const [userPoints, setUserPoints] = useState(100);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTestCaseId, setSelectedTestCaseId] = useState<string>('');
+  const [publicRunResults, setPublicRunResults] = useState<TestCaseResult[]>([]);
   
   const { toast } = useToast();
   
@@ -67,6 +68,12 @@ export default function CompilerComponent({ onSubmit, onPointDeduction, classNam
         title: "Submission Complete",
         description: `Your solution has been evaluated against all test cases.`,
       });
+    }
+  };
+
+  const handleRunComplete = (payload: { language: string; code: string; results: TestCaseResult[] }) => {
+    if (payload.results && payload.results.length > 0) {
+      setPublicRunResults(payload.results);
     }
   };
 
@@ -134,6 +141,7 @@ export default function CompilerComponent({ onSubmit, onPointDeduction, classNam
           userId={userId}
           testcaseId={testcaseId}
           testcases={currentQuestionData.testCases}
+          onRunComplete={handleRunComplete}
           onSubmitComplete={handleSubmitComplete}
         />
       )}
@@ -149,6 +157,7 @@ export default function CompilerComponent({ onSubmit, onPointDeduction, classNam
           onRevealTestCase={handleRevealTestCase}
           onRunSingleTestCase={handleRunSingleTestCase}
           showHidden={showHiddenTestCases}
+          runResults={publicRunResults}
         />
       )}
 

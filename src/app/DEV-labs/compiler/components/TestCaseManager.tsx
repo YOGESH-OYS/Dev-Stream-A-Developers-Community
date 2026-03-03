@@ -13,6 +13,8 @@ interface TestCaseManagerProps {
   onRevealTestCase?: (testCaseId: string) => void;
   onRunSingleTestCase?: (testCaseId: string) => void;
   showHidden?: boolean;
+  /** Latest results from Run Code for public (revealed) test cases */
+  runResults?: TestCaseResult[];
 }
 
 export function TestCaseManager({
@@ -24,23 +26,17 @@ export function TestCaseManager({
   onRevealTestCase,
   onRunSingleTestCase,
   showHidden = false,
+  runResults = [],
 }: TestCaseManagerProps) {
   const [testCaseResults, setTestCaseResults] = useState<Record<string, TestCaseResult>>({});
 
-  // Mock test case execution results for revealed test cases
   useEffect(() => {
-    const mockResults: Record<string, TestCaseResult> = {};
-    revealedTestCases.forEach((testCase, index) => {
-      mockResults[testCase.id] = {
-        testCaseId: testCase.id,
-        status: 'passed',
-        actualOutput: testCase.expectedOutput,
-        executionTime: Math.floor(Math.random() * 3) + 1,
-        memoryUsed: 14 + Math.random() * 0.5,
-      };
+    const map: Record<string, TestCaseResult> = {};
+    runResults.forEach(result => {
+      map[result.testCaseId] = result;
     });
-    setTestCaseResults(mockResults);
-  }, [revealedTestCases]);
+    setTestCaseResults(map);
+  }, [runResults]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -49,7 +45,7 @@ export function TestCaseManager({
       case 'failed':
         return <XCircle className="h-4 w-4 text-red-400" />;
       default:
-        return <div className="h-4 w-4 rounded-full bg-gray-400" />;
+        return ;
     }
   };
 
@@ -110,18 +106,8 @@ export function TestCaseManager({
                     </h3>
                     <div className="flex items-center gap-3">
                       <span className={`text-sm ${getStatusColor(result?.status || 'pending')}`}>
-                        {getStatusIcon(result?.status || 'pending')}
-                        <span className="ml-1">{getStatusText(result?.status || 'pending')}</span>
+                        <span className="ml-1">{getStatusIcon(result?.status)} {getStatusText(result?.status || 'pending')}</span>
                       </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onRunSingleTestCase?.(testCase.id)}
-                        data-testid={`run-test-case-${index + 1}`}
-                      >
-                        <Play className="h-4 w-4 mr-1" />
-                        Run
-                      </Button>
                     </div>
                   </div>
 
@@ -245,8 +231,7 @@ export function TestCaseManager({
                   
                   <div className="flex items-center gap-4">
                     <span className={`text-sm ${getStatusColor(testCase.status)}`}>
-                      {getStatusIcon(testCase.status)}
-                      <span className="ml-1">{getStatusText(testCase.status)}</span>
+                      <span className="ml-1">{getStatusIcon(testCase.status)} {getStatusText(testCase.status)}</span>
                     </span>
                     <Button
                       variant="ghost"

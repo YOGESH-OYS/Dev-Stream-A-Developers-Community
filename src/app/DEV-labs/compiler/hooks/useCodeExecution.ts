@@ -1,5 +1,5 @@
 import { useState,useEffect, useCallback } from 'react';
-import { Language, TestCaseResult, ExecutionStats } from '../types';
+import { Language, TestCase, TestCaseResult, ExecutionStats } from '../types';
 import { CodeRunner, CodeRequest } from '../utils/codeRunner';
 
 interface UseCodeExecutionReturn {
@@ -9,7 +9,8 @@ interface UseCodeExecutionReturn {
   isSubmitting: boolean;
   executionStats: ExecutionStats;
   consoleOutput: string;
-  runCode: (questionId: string, language: Language, code: string, userId?: string, Input?: string) => Promise<void>;
+  // Run visible/public test cases against user's code and return per-test results
+  runCode: ( questionId: string, language: Language, code: string, userId?: string, publicTestcases?: TestCase[],) => Promise<TestCaseResult[]>;
   compileCode: (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => Promise<void>;
   submitCode: (questionId: string, language: Language, code: string, userId?: string, testcaseId?: string) => Promise<TestCaseResult[]>;
   clearOutput: () => void;
@@ -46,74 +47,94 @@ export function useCodeExecution(): UseCodeExecutionReturn {
     </div>
   `);
 
-  const runCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, Input?: string) => {
-    if (isRunning || isSubmitting || isCompiling) return;
+  const runCode = useCallback(
+    async ( questionId: string, language: Language, code: string, userId?: string,publicTestcases: TestCase[] = [],
+    ): Promise<TestCaseResult[]> => {
 
-    setIsRunning(true);
-    setExecutionStats(prev => ({ ...prev, executionStatus: 'Running...' }));
-    setConsoleOutput(`
-      <div class="flex items-center gap-2 text-primary">
-        <div class="spinner"></div>
-        <span>Executing your ${language} solution...</span>
-      </div>
-    `);
+      if (isRunning || isSubmitting || isCompiling) return [];
 
-    try {
-      const request: CodeRequest = {
-        questionId,
-        language,
-        code,
-        userId,
-        stdin: Input ?? '',
-      };
-
-      const response = await CodeRunner.runCode(request);
-      const passedCount = response.totalPassed;
-      const totalCount = response.totalTests;
-      const maxTime = 0;
-      const maxMemory = 0;
-
-      setExecutionStats({
-        executionTime: CodeRunner.formatExecutionTime(maxTime),
-        memoryUsage: CodeRunner.formatMemoryUsage(maxMemory),
-        executionStatus: passedCount === totalCount ? 'Passed' : 'Failed',
-      });
-
-      const outputHtml = `
-        <div class="space-y-3">
-          <div class="flex items-center gap-2 text-green-400">
-            <i class="fas fa-check-circle"></i>
-            <span>Compilation successful</span>
-          </div>
-          <div class="space-y-2">
-            <div class="flex justify-between">
-            <pre class="text-sm text-white">${response.results}</pre>
-            <span class="${CodeRunner.getStatusColor(response.status)}">
-            </span>
-            </div>
-          </div>
-        </div>
-      `;
-
-      setConsoleOutput(outputHtml);
-    } 
-    catch (error) {
-      console.error('Code execution failed:', error);
-      setExecutionStats(prev => ({ ...prev, executionStatus: 'Error' }));
+      setIsRunning(true);
+      setExecutionStats(prev => ({ ...prev, executionStatus: 'Running...' }));
       setConsoleOutput(`
-        <div class="flex items-center gap-2 text-red-400">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>Execution failed</span>
-        </div>
-        <div class="text-sm text-muted-foreground mt-2">
-          ${error instanceof Error ? error.message : 'Unknown error occurred'}
+        <div class="flex items-center gap-2 text-primary">
+          <div class="spinner"></div>
+          <span>Executing your ${language} solution on sample test cases...</span>
         </div>
       `);
-    } 
-    finally {
-      setIsRunning(false);
-    }
-  }, [isRunning, isSubmitting, isCompiling]);
+
+      const aggregatedResults: TestCaseResult[] = [];
+
+      try {
+        for (const tc of publicTestcases) {
+          const request: CodeRequest = {
+            questionId,
+            language,
+            code,
+            userId,
+            stdin: tc.input,
+          };
+
+          const response = await CodeRunner.runCode(request);
+          const judge = response.results;
+          const rawOutput = (judge.stdout ?? judge.stderr ?? '').trim();
+          const expected = (tc.expectedOutput ?? '').trim();
+          const passed = rawOutput === expected;
+
+          aggregatedResults.push({
+            testCaseId: tc.id,
+            status: passed ? 'passed' : 'failed',
+            actualOutput: rawOutput,
+            executionTime: Number(judge.time) || 0,
+            memoryUsed: Number(judge.memory) || 0,
+            isHidden: false,
+          });
+        }
+
+        const maxTime = Math.max(...aggregatedResults.map(r => r.executionTime || 0), 0);
+        const maxMemory = Math.max(...aggregatedResults.map(r => r.memoryUsed || 0), 0);
+
+        setExecutionStats({
+          executionTime: CodeRunner.formatExecutionTime(maxTime),
+          memoryUsage: CodeRunner.formatMemoryUsage(maxMemory),
+          executionStatus: 'Completed',
+        });
+
+        const totalCount = aggregatedResults.length;
+        const passedCount = aggregatedResults.filter(r => r.status === 'passed').length;
+
+        const outputHtml = `
+          <div class="space-y-3">
+            <div class="flex items-center gap-2 text-green-400">
+              <i class="fas fa-check-circle"></i>
+              <span>Ran ${totalCount} sample test case${totalCount === 1 ? '' : 's'}</span>
+            </div>
+            <div class="text-sm text-muted-foreground">
+              ${passedCount}/${totalCount} passed.
+            </div>
+          </div>
+        `;
+
+        setConsoleOutput(outputHtml);
+        return aggregatedResults;
+      } catch (error) {
+        console.error('Code execution failed:', error);
+        setExecutionStats(prev => ({ ...prev, executionStatus: 'Error' }));
+        setConsoleOutput(`
+          <div class="flex items-center gap-2 text-red-400">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Execution failed</span>
+          </div>
+          <div class="text-sm text-muted-foreground mt-2">
+            ${error instanceof Error ? error.message : 'Unknown error occurred'}
+          </div>
+        `);
+        return [];
+      } finally {
+        setIsRunning(false);
+      }
+    },
+    [isRunning, isSubmitting, isCompiling],
+  );
 
   const compileCode = useCallback(async (questionId: string, language: Language, code: string, userId?: string, customInput?: string) => {
     if (isRunning || isSubmitting || isCompiling) return;

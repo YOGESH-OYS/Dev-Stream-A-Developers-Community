@@ -81,7 +81,7 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
       const source_code = data.code;
       const stdin = typeof data.stdin === 'string' ? data.stdin : '';
 
-      // 1. Submit code to Judge0 (user's code + user's custom input)
+      // 1. Submit code to Judge0 (user's code + input)
       const submitRes = await fetch("http://3.111.144.140:2358/submissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -113,14 +113,25 @@ export async function mockApiRequest(method: string, url: string, data?: any): P
   
         await new Promise((r) => setTimeout(r, 300));
       }
-
-      return new Response(JSON.stringify({
-        status: 'success',
-        results: result.stdout ?? '',
-      }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      
+      // Mirror compile-code format: status + full Judge0 result payload
+      if (result && result.stdout != null) {
+        return new Response(JSON.stringify({
+          status: 'success',
+          results: result,
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      } else {
+        return new Response(JSON.stringify({
+          status: 'failed',
+          results: result,
+        }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
   
     } catch (err) {
       return new Response(
