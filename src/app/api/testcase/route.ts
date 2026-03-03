@@ -7,14 +7,14 @@ import { verifySessionToken } from "@/lib/auth";
 import User from "@/models/User";
 
 // Define the Zod schema for the Example subdocument
-export const exampleSchema = z.object({
+const exampleSchema = z.object({
   input: z.string(),
   output: z.string(),
   explanation: z.string().optional(),
 });
 
 // Define the Zod schema for the TestCase subdocument
-export const testCaseSchema = z.object({
+const testCaseSchema = z.object({
   id: z.string(),
   questionId: z.string(),
   input: z.string(),
@@ -24,7 +24,7 @@ export const testCaseSchema = z.object({
 });
 
 // Define the Zod schema for the main document
-export const UserDataSchema = z.object({
+const UserDataSchema = z.object({
   title: z.string(),
   question_id: z.string(),
   difficulty:z.string(),
