@@ -36,7 +36,7 @@ export default function Page() {
 	function NavBar() {
 		return (
 			<div className="fixed top-4 left-1/2 -translate-x-1/2 z-50">
-				<nav className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-6 py-3 flex items-center gap-6">
+				<nav className="w-[750px] backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl shadow-cyan-500/10 px-8 py-4 flex items-center justify-between">
 					<Link href="/" scroll={true} className="flex items-center gap-2 group">
 						<div>
 							<img
