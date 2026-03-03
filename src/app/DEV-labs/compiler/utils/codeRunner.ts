@@ -1,5 +1,4 @@
 import { TestCaseResult, Language } from '../types';
-import { mockApiRequest } from '@/app/api/compiler/route';
 
 export interface ProcessUrl{
   url: string;
@@ -67,12 +66,32 @@ export interface SubmitCodeResponse {
 export class CodeRunner {
 
   static async runCode(request: CodeRequest): Promise<RunCodeResponse> {
-    const response = await mockApiRequest('POST', '/api/run-code', request);
+    const response = await fetch("/api/compiler", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "run",
+        ...request,
+      }),
+    });
+  
     return await response.json();
   }
-
+  
   static async compileCode(request: CodeRequest): Promise<CompileCodeResponse> {
-    const response = await mockApiRequest('POST', '/api/compile-code', request);
+    const response = await fetch("/api/compiler", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "compile",
+        ...request,
+      }),
+    });
+  
     return await response.json();
   }
 
@@ -89,7 +108,17 @@ export class CodeRunner {
   }
 
   static async submitCode(request: SubmitCodeRequest): Promise<SubmitCodeResponse> {
-    const response = await mockApiRequest('POST', '/api/submit', request);
+    const response = await fetch("/api/compiler", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "submit",
+        ...request,
+      }),
+    });
+  
     return await response.json();
   }
 
