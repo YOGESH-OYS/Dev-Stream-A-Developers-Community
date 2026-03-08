@@ -1,25 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { 
-  MessageSquare, 
-  Settings, 
-  Plus, 
-  Trash2, 
-  Edit3, 
+import {
+  MessageSquare,
+  Settings,
+  Plus,
+  Trash2,
+  Edit3,
   X,
   Video,
   Code,
-  Clock
+  Loader2,
 } from 'lucide-react';
 
 interface Chat {
   id: string;
   title: string;
-  videoUrl: string;
-  createdAt: string;
-  lastAccessed: string;
+  difficulty?: string;
 }
 
 interface ChatSidebarProps {
@@ -31,54 +29,76 @@ export default function ChatSidebar({ isOpen, onToggle }: ChatSidebarProps) {
   const [showSettings, setShowSettings] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  // Dummy chat data with enough entries to force scroll
-  const [chats, setChats] = useState<Chat[]>([
-    { id: '1', title: 'React Hooks Tutorial', videoUrl: 'https://youtube.com/watch?v=example1', createdAt: '2024-01-15', lastAccessed: '2024-01-20' },
-    { id: '2', title: 'JavaScript Async/Await', videoUrl: 'https://youtube.com/watch?v=example2', createdAt: '2024-01-18', lastAccessed: '2024-01-19' },
-    { id: '3', title: 'Next.js App Router Guide', videoUrl: 'https://youtube.com/watch?v=example3', createdAt: '2024-01-20', lastAccessed: '2024-01-21' },
-    { id: '4', title: 'TypeScript Advanced Patterns', videoUrl: 'https://youtube.com/watch?v=example4', createdAt: '2024-01-22', lastAccessed: '2024-01-23' },
-    { id: '5', title: 'Node.js Backend Development', videoUrl: 'https://youtube.com/watch?v=example5', createdAt: '2024-01-24', lastAccessed: '2024-01-25' },
-    { id: '6', title: 'MongoDB Database Design', videoUrl: 'https://youtube.com/watch?v=example6', createdAt: '2024-01-26', lastAccessed: '2024-01-27' },
-    { id: '7', title: 'GraphQL API Development', videoUrl: 'https://youtube.com/watch?v=example7', createdAt: '2024-01-28', lastAccessed: '2024-01-29' },
-    { id: '8', title: 'Docker Containerization', videoUrl: 'https://youtube.com/watch?v=example8', createdAt: '2024-01-30', lastAccessed: '2024-01-31' },
-    { id: '9', title: 'Kubernetes Orchestration', videoUrl: '...', createdAt: '2024-02-01', lastAccessed: '2024-02-02' },
-    { id: '10', title: 'Serverless Functions', videoUrl: '...', createdAt: '2024-02-03', lastAccessed: '2024-02-04' },
-    { id: '11', title: 'Go Language Basics', videoUrl: '...', createdAt: '2024-02-05', lastAccessed: '2024-02-06' },
-    { id: '12', title: 'Advanced CSS Grid', videoUrl: '...', createdAt: '2024-02-07', lastAccessed: '2024-02-08' },
-  ]);
+  const fetchChats = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/chats', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setChats(data.chats ?? []);
+      } else {
+        setChats([]);
+      }
+    } catch {
+      setChats([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  // ... (handleEditChat, handleDeleteChat, handleSaveEdit, formatDate functions remain the same)
+  useEffect(() => {
+    fetchChats();
+  }, [fetchChats]);
+
+  useEffect(() => {
+    if (isOpen) fetchChats();
+  }, [isOpen, fetchChats]);
+
   const handleEditChat = (chat: Chat) => {
     setSelectedChat(chat);
     setEditingTitle(chat.title);
     setShowSettings(true);
   };
 
-  const handleDeleteChat = (chatId: string) => {
-    setChats(chats.filter(chat => chat.id !== chatId));
-    setShowSettings(false);
-    setSelectedChat(null);
-  };
-
-  const handleSaveEdit = () => {
-    if (selectedChat && editingTitle.trim()) {
-      setChats(chats.map(chat => 
-        chat.id === selectedChat.id 
-          ? { ...chat, title: editingTitle.trim() }
-          : chat
-      ));
+  const handleDeleteChat = async (chatId: string) => {
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/chats/${chatId}`, { method: 'DELETE', credentials: 'include' });
+      if (res.ok) {
+        setChats((prev) => prev.filter((c) => c.id !== chatId));
+        setShowSettings(false);
+        setSelectedChat(null);
+      }
+    } finally {
+      setSaving(false);
     }
-    setShowSettings(false);
-    setSelectedChat(null);
-    setEditingTitle('');
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
-    });
+  const handleSaveEdit = async () => {
+    if (!selectedChat || !editingTitle.trim()) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/chats/${selectedChat.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ title: editingTitle.trim() }),
+      });
+      if (res.ok) {
+        setChats((prev) =>
+          prev.map((c) => (c.id === selectedChat.id ? { ...c, title: editingTitle.trim() } : c))
+        );
+      }
+      setShowSettings(false);
+      setSelectedChat(null);
+      setEditingTitle('');
+    } finally {
+      setSaving(false);
+    }
   };
   
   return (
@@ -120,53 +140,62 @@ export default function ChatSidebar({ isOpen, onToggle }: ChatSidebarProps) {
           </div>
         </div>
 
-        {/* 3. Chat List - Scrollable: Explicitly calculates height (100vh - 5rem header height) */}
+        {/* 3. Chat List - Scrollable */}
         <div className="h-[calc(100vh-5rem)] overflow-y-auto p-4 space-y-3">
-          {chats.map((chat) => (
-            <Link
-              key={chat.id}
-              href={`/DEV-labs/compiler?video=${encodeURIComponent(chat.videoUrl)}`}
-              className="block group"
-            >
-              <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-[1.02]">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-white font-medium text-sm group-hover:text-purple-200 transition-colors line-clamp-2">
-                    {chat.title}
-                  </h3>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleEditChat(chat);
-                    }}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-white transition-all"
-                  >
-                    <Edit3 className="w-3 h-3" />
-                  </button>
-                </div>
-                
-                <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
-                  <Video className="w-3 h-3" />
-                  <span className="truncate">YouTube Video</span>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    <span>Created {formatDate(chat.createdAt)}</span>
-                  </div>
-                  <Code className="w-3 h-3" />
-                </div>
-              </div>
-            </Link>
-          ))}
-
-          {/* Add New Chat Button */}
-          <button className="w-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-4 hover:from-purple-600/30 hover:to-pink-600/30 transition-all duration-300 group">
-            <div className="flex items-center justify-center gap-2 text-purple-300 group-hover:text-white">
-              <Plus className="w-4 h-4" />
-              <span className="font-medium">Start New Chat</span>
+          {loading ? (
+            <div className="flex items-center justify-center py-12 text-gray-400">
+              <Loader2 className="w-6 h-6 animate-spin mr-2" />
+              <span>Loading chats...</span>
             </div>
-          </button>
+          ) : (
+            <>
+              {chats.map((chat) => (
+                <Link
+                  key={chat.id}
+                  href={`/DEV-labs/compiler?brainnerd_devlabs_=${chat.id}`}
+                  className="block group"
+                >
+                  <div className="bg-slate-800/50 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-[1.02]">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-white font-medium text-sm group-hover:text-purple-200 transition-colors line-clamp-2">
+                        {chat.title}
+                      </h3>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleEditChat(chat);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-white transition-all"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                      <Video className="w-3 h-3" />
+                      <span className="truncate">Lesson</span>
+                      {chat.difficulty && (
+                        <span className="text-purple-400/80 capitalize">{chat.difficulty}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>Open in compiler</span>
+                      <Code className="w-3 h-3" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+
+              <Link
+                href="/DEV-labs"
+                className="block w-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-4 hover:from-purple-600/30 hover:to-pink-600/30 transition-all duration-300 group"
+              >
+                <div className="flex items-center justify-center gap-2 text-purple-300 group-hover:text-white">
+                  <Plus className="w-4 h-4" />
+                  <span className="font-medium">Start New Chat</span>
+                </div>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
@@ -206,13 +235,16 @@ export default function ChatSidebar({ isOpen, onToggle }: ChatSidebarProps) {
                 <div className="flex gap-3">
                   <button
                     onClick={handleSaveEdit}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
+                    disabled={saving}
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
                   >
+                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                     Save Changes
                   </button>
                   <button
                     onClick={() => handleDeleteChat(selectedChat.id)}
-                    className="flex-1 bg-red-600/20 border border-red-500/30 text-red-400 py-2 px-4 rounded-lg hover:bg-red-600/30 transition-all duration-300 flex items-center justify-center gap-2"
+                    disabled={saving}
+                    className="flex-1 bg-red-600/20 border border-red-500/30 text-red-400 py-2 px-4 rounded-lg hover:bg-red-600/30 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     <Trash2 className="w-4 h-4" />
                     Delete
